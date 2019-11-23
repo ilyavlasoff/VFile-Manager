@@ -5,8 +5,84 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VFile_Manager"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="VExplorer" Height="600" Width="800" Loaded="Window_Loaded">
+    <!--Window.Resources>
+        <DataTemplate x:Key="rowTemplate">
+            <Grid Width="Auto" Height="30" Name="fileRow" PreviewMouseDown="fileRow_PreviewMouseDown" >
+                <CheckBox x:Name="rowChecked" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="50,0,0,0"></CheckBox>
+                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="100,0,0,0" ></TextBlock>
+                <TextBlock Text="item"></TextBlock>
+            </Grid>
+        </DataTemplate>
+    </-->
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="20"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <StackPanel Orientation="Horizontal" Margin="20,0">
+                <Button Content="New File" x:Name="mkfileBut" Width="40" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0"></Button>
+                <Button Content="New Dir" x:Name="mkdirBut" Width="40" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0"></Button>
+                <Button Content="Copy" x:Name="copyBut" Width="40" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0"></Button>
+                <Button Content="Move" x:Name="movBut" Width="40" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0"></Button>
+                <Button Content="Rename" x:Name="renBut" Width="40" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0"></Button>
+                <Button Content="Delete" x:Name="delBut" Width="40" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0"></Button>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Button Width="15" Height="15" HorizontalAlignment="Left" Margin="20,0,0,0" Background="White" BorderThickness="0" x:Name="toParentDirButL" Click="toParentDirButL_Click">T</Button>
+                <TextBlock x:Name="pathRowL" Width="300"></TextBlock>
+                <ComboBox x:Name="rootComboBoxL" Width="50" HorizontalAlignment="Right"></ComboBox>
+            </Grid>
+            <Grid Grid.Column="1">
+                <Button Width="15" Height="15" HorizontalAlignment="Left" Margin="20,0,0,0" Background="White" BorderThickness="0" x:Name="toParentDirButR" Click="toParentDirButR_Click">T</Button>
+                <TextBlock x:Name="pathRowR" Width="300"></TextBlock>
+                <ComboBox x:Name="rootComboBoxR" Width="50" HorizontalAlignment="Right"></ComboBox>
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden">
+                    <ListBox Name="leftView" HorizontalContentAlignment="Stretch">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <ListBoxItem Width="Auto" Height="30" x:Name="leftViewItem" PreviewMouseDoubleClick="leftViewItem_PreviewMouseDoubleClick">
+                                    <Grid>
+                                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="100,0,0,0" ></TextBlock>
+                                    </Grid>
+                                </ListBoxItem>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </ScrollViewer>
+            </Grid>
+            <Grid Grid.Column="1">
+                <ScrollViewer>
+                    <ListBox Name="rightView" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <ListBoxItem Width="Auto" Height="30" x:Name="rightViewItem" PreviewMouseDoubleClick="rightViewItem_PreviewMouseDoubleClick">
+                                    <Grid>
+                                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="100,0,0,0" ></TextBlock>
+                                    </Grid>
+                                </ListBoxItem>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
     </Grid>
 </Window>
