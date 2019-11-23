@@ -63,6 +63,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="File Containers\FileContainer.cs" />
+    <Compile Include="File Containers\FileDualContainer.cs" />
     <Compile Include="FileObjects\Dir.cs" />
     <Compile Include="FileObjects\File.cs" />
     <Compile Include="FileObjects\IFileObject.cs" />
@@ -97,5 +99,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
