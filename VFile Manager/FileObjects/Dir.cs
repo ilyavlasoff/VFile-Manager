@@ -8,6 +8,8 @@ namespace VFile_Manager.FileObjects
 {
     class Dir : IFileObject
     {
+        private const Int32 MaxDirLen = 255;
+
         private DirectoryInfo CurrentDirInfo;
         public Dir(DirectoryInfo _dinfo)
         {
@@ -23,9 +25,8 @@ namespace VFile_Manager.FileObjects
             {
                 CurrentDirInfo = new DirectoryInfo(_dpath);
             }
+            else throw new Exception("Directory not found");
         }
-        private Int32 MaxDirLen = 255;
-
         public Dir GetParentDirectory()
         {
             try
@@ -38,7 +39,13 @@ namespace VFile_Manager.FileObjects
                 return null;
             }
         }
-
+        public FileDirInfo Info
+        {
+            get
+            {
+                return new FileDirInfo(CurrentDirInfo);
+            }
+        }
         public IEnumerable<File> GetFiles(String _filter = "*")
         {
             return CurrentDirInfo.GetFiles(_filter).Select((item) => new File(item));
@@ -47,34 +54,11 @@ namespace VFile_Manager.FileObjects
         {
             return CurrentDirInfo.GetDirectories(_filter).Select((item) => new Dir(item));
         }
-        public bool Exists
+        public bool Exists()
         {
-            get
-            {
-                return CurrentDirInfo.Exists;
-            }
+            return CurrentDirInfo.Exists;
         }
-        public String Extension
-        {
-            get
-            {
-                return CurrentDirInfo.Extension;
-            }
-        }
-        public String Name
-        {
-            get
-            {
-                return CurrentDirInfo.Name;
-            }
-        }
-        public String Path
-        {
-            get
-            {
-                return CurrentDirInfo.FullName;
-            }
-        }
+        
         public void Open()
         {
 

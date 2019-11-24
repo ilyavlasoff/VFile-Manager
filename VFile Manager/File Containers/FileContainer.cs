@@ -8,7 +8,7 @@ namespace VFile_Manager.File_Containers
 {
     class FileContainer
     {
-        public FileObjects.Dir Path { get; private set; }
+        public FileObjects.Dir StoredDirectory { get; private set; }
 
         public List<FileObjects.IFileObject> DirContent { get; private set; }
 
@@ -16,7 +16,7 @@ namespace VFile_Manager.File_Containers
         {
             if (Directory.Exists(_path))
             {
-                Path = new FileObjects.Dir(_path);
+                StoredDirectory = new FileObjects.Dir(_path);
             }
         }
 
@@ -33,13 +33,13 @@ namespace VFile_Manager.File_Containers
 
         public void GoToDirectory(FileObjects.Dir _directory)
         {
-            if (_directory.Exists)
+            if (_directory.Exists())
             {
-                Path = _directory;
+                StoredDirectory = _directory;
                 DirContent.Clear();
                 try
                 {
-                    IEnumerable<FileObjects.File> files = Path.GetFiles();
+                    IEnumerable<FileObjects.File> files = StoredDirectory.GetFiles();
                     DirContent.AddRange(files);
                 }
                 catch (Exception ex)
@@ -48,7 +48,7 @@ namespace VFile_Manager.File_Containers
                 }
                 try
                 {
-                    IEnumerable<FileObjects.Dir> dirs = Path.GetDirectories();
+                    IEnumerable<FileObjects.Dir> dirs = StoredDirectory.GetDirectories();
                     DirContent.AddRange(dirs);
                 }
                 catch (Exception ex)

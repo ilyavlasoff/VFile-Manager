@@ -8,9 +8,8 @@ namespace VFile_Manager.FileObjects
 {
     interface IFileObject
     {
-        String Name { get; }
-        String Path { get; }
-        bool Exists { get; }
+        FileDirInfo Info { get; }
+        bool Exists();
         void Open();
         void Delete();
         void Move(String _path);

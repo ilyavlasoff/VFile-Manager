@@ -8,7 +8,14 @@ namespace VFile_Manager.FileObjects
 {
     class File : IFileObject
     {
-        FileInfo CurrentFileInfo;
+        private FileInfo CurrentFileInfo;
+        public FileDirInfo Info
+        {
+            get
+            {
+                return new FileDirInfo(CurrentFileInfo);
+            }
+        }
         public File(FileInfo _finfo)
         {
             if (_finfo.Exists)
@@ -17,26 +24,9 @@ namespace VFile_Manager.FileObjects
             }
             else throw new Exception("File not found");
         }
-        public String Name
+        public bool Exists()
         {
-            get
-            {
-                return CurrentFileInfo.Name;
-            }
-        }
-        public String Path
-        {
-            get
-            {
-                return CurrentFileInfo.FullName;
-            }
-        }
-        public bool Exists
-        {
-            get
-            {
-                return CurrentFileInfo.Exists;
-            }
+            return CurrentFileInfo.Exists;
         }
         public void Open()
         {

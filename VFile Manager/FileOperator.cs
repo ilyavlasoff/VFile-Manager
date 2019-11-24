@@ -26,13 +26,13 @@ namespace VFile_Manager
                 rightPath = Directory.GetCurrentDirectory();
                 SavedDataReader.SetSavedStartingDirsToXml(rightPath, Side.Right);
             }
-            FileContainers.FileDualContainer.ChooseContainer(Side.Left).GoToDirectory(leftPath);
-            FileContainers.FileDualContainer.ChooseContainer(Side.Right).GoToDirectory(rightPath);
+            File_Containers.FileDualContainer.ChooseContainer(Side.Left).GoToDirectory(leftPath);
+            File_Containers.FileDualContainer.ChooseContainer(Side.Right).GoToDirectory(rightPath);
         }
 
         public static IEnumerable<FileObjects.IFileObject> GetDirContainsList(Side _s)
         {
-            return FileContainers.FileDualContainer.ChooseContainer(_s).DirContent;
+            return File_Containers.FileDualContainer.ChooseContainer(_s).DirContent;
         }
 
         public static IEnumerable<String> GetAllLogicalDrives()
@@ -47,7 +47,7 @@ namespace VFile_Manager
             if (_file is FileObjects.Dir)
             {
                 FileObjects.Dir choosedDir = _file as FileObjects.Dir;
-                FileContainers.FileDualContainer.ChooseContainer(_s).GoToDirectory(choosedDir);
+                File_Containers.FileDualContainer.ChooseContainer(_s).GoToDirectory(choosedDir);
             }
             else if (_file is FileObjects.File)
             {
@@ -63,10 +63,10 @@ namespace VFile_Manager
         {
             try
             {
-                FileObjects.Dir parentDir = FileContainers.FileDualContainer.ChooseContainer(_s).Path.GetParentDirectory();
+                FileObjects.Dir parentDir = File_Containers.FileDualContainer.ChooseContainer(_s).StoredDirectory.GetParentDirectory();
                 if (parentDir != null)
                 {
-                    FileContainers.FileDualContainer.ChooseContainer(_s).GoToDirectory(parentDir);
+                    File_Containers.FileDualContainer.ChooseContainer(_s).GoToDirectory(parentDir);
                 }
             }
             catch (Exception ex)

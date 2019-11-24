@@ -3,3 +3,14 @@ C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\MainWindow.g.c
 C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\App.g.cs
 C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\VFile Manager_MarkupCompile.cache
 C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\VFile Manager_MarkupCompile.lref
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\SettingsWindow.g.cs
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\bin\Debug\VFile Manager.exe.config
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\bin\Debug\VFile Manager.exe
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\bin\Debug\VFile Manager.pdb
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\MainWindow.baml
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\SettingsWindow.baml
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\VFile Manager.g.resources
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\VFile_Manager.Properties.Resources.resources
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\VFile Manager.csproj.GenerateResource.cache
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\VFile Manager.exe
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\VFile Manager.pdb
