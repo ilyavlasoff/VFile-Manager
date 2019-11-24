@@ -64,6 +64,7 @@ namespace VFile_Manager.FileObjects
 
         }
 
+
         public void Copy(String _path)
         {
             if (CurrentDirInfo.Exists && Directory.Exists(_path))

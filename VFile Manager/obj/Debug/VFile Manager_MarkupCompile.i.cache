@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Users\iljav\source\repos\VFile Manager\VFile Manager\App.xaml
-2-649523810
+3-1935320313
 
-15-196043397
+16437078601
 13-1505183044
-MainWindow.xaml;SettingsWindow.xaml;
+CreateFileOrDir.xaml;MainWindow.xaml;SettingsWindow.xaml;
 
-False
+True
 

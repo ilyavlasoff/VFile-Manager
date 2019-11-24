@@ -24,10 +24,10 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <StackPanel Orientation="Horizontal" Margin="20,0" HorizontalAlignment="Left">
-                <Button Content="New File" x:Name="mkfileBut" Width="40" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0"></Button>
-                <Button Content="New Dir" x:Name="mkdirBut" Width="40" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0"></Button>
-                <Button Content="Copy" x:Name="copyBut" Width="40" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0"></Button>
-                <Button Content="Move" x:Name="movBut" Width="40" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0"></Button>
+                <Button Content="New File" x:Name="mkfileBut" Width="40" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" Click="mkfileBut_Click"></Button>
+                <Button Content="New Dir" x:Name="mkdirBut" Width="40" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" Click="mkdirBut_Click"></Button>
+                <Button Content="Copy" x:Name="copyBut" Width="40" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" Click="copyBut_Click"></Button>
+                <Button Content="Move" x:Name="movBut" Width="40" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" Click="movBut_Click"></Button>
                 <Button Content="Rename" x:Name="renBut" Width="40" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0"></Button>
                 <Button Content="Delete" x:Name="delBut" Width="40" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0"></Button>
             </StackPanel>
@@ -39,17 +39,15 @@
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">
-                <DockPanel>
-                    <Button DockPanel.Dock="Left" Width="15" Height="15" HorizontalAlignment="Left" Margin="20,0,0,0" Background="White" BorderThickness="0" x:Name="toParentDirButL" Click="toParentDirButL_Click">T</Button>
-                    <TextBlock DockPanel.Dock="Left" x:Name="pathRowL" HorizontalAlignment="Stretch" Width="300"></TextBlock>
-                    <ComboBox DockPanel.Dock="Right" x:Name="rootComboBoxL" Width="50" SelectionChanged="rootComboBoxL_SelectionChanged"></ComboBox>
-                </DockPanel>
+                <Button DockPanel.Dock="Left" Width="15" Height="15" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="20,0,0,0" Background="White" BorderThickness="0" x:Name="toParentDirButL" Click="toParentDirButL_Click">T</Button>
+                <TextBlock DockPanel.Dock="Left" VerticalAlignment="Center" x:Name="pathRowL" HorizontalAlignment="Stretch" Margin="40,0,70,0"></TextBlock>
+                <ComboBox DockPanel.Dock="Right" VerticalAlignment="Center" x:Name="rootComboBoxL" HorizontalAlignment="Right" Width="50" SelectionChanged="rootComboBoxL_SelectionChanged"></ComboBox>
             </Grid>
             <Grid Grid.Column="1">
                 <DockPanel>
-                    <Button DockPanel.Dock="Left" Width="15" Height="15" HorizontalAlignment="Left" Margin="20,0,0,0" Background="White" BorderThickness="0" x:Name="toParentDirButR" Click="toParentDirButR_Click">T</Button>
-                    <TextBlock DockPanel.Dock="Left" x:Name="pathRowR" HorizontalAlignment="Stretch" Width="300"></TextBlock>
-                    <ComboBox DockPanel.Dock="Right" x:Name="rootComboBoxR" Width="50" SelectionChanged="rootComboBoxR_SelectionChanged"></ComboBox>
+                    <Button DockPanel.Dock="Left" Width="15" VerticalAlignment="Center" Height="15" HorizontalAlignment="Left" Margin="20,0,0,0" Background="White" BorderThickness="0" x:Name="toParentDirButR" Click="toParentDirButR_Click">T</Button>
+                    <TextBlock DockPanel.Dock="Left" x:Name="pathRowR" VerticalAlignment="Center" HorizontalAlignment="Stretch" Width="300"></TextBlock>
+                    <ComboBox DockPanel.Dock="Right" x:Name="rootComboBoxR" VerticalAlignment="Center" Width="50" SelectionChanged="rootComboBoxR_SelectionChanged"></ComboBox>
                 </DockPanel>
             </Grid>
         </Grid>
@@ -59,35 +57,64 @@
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">
-                <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden">
-                    <ListBox Name="leftView" HorizontalContentAlignment="Stretch">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <ListBoxItem Width="Auto" Height="30" x:Name="leftViewItem" PreviewMouseDoubleClick="leftViewItem_PreviewMouseDoubleClick">
-                                    <Grid>
-                                        <TextBlock Text="D" Visibility="{Binding Info.IsDirectory}" Margin="10,0,0,0"></TextBlock>
-                                        <TextBlock Text="{Binding Info.ShortName}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="30,0,0,0" ></TextBlock>
-                                    </Grid>
-                                </ListBoxItem>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </ScrollViewer>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20"></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" Name="StatusStrL">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding ShortName}" MaxWidth="100"></TextBlock>
+                        <TextBlock Text="{Binding NumberOfFilesInside}"></TextBlock>
+                        <TextBlock Text="{Binding NumberOfDirsInside}"></TextBlock>
+                        <TextBlock Text="{Binding CreateTime}"></TextBlock>
+                    </StackPanel>
+                </Grid>
+                <Grid Grid.Row="1">
+                    <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden">
+                        <ListBox Name="leftView" SelectionMode="Multiple" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" PreviewMouseLeftButtonDown="leftView_PreviewMouseLeftButtonDown" PreviewMouseWheel="leftView_PreviewMouseWheel" PreviewMouseDoubleClick="leftView_PreviewMouseLeftButtonDown">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <ListBoxItem Width="Auto" Height="30" x:Name="leftViewItem" PreviewMouseDoubleClick="leftViewItem_PreviewMouseDoubleClick" PreviewMouseLeftButtonDown="leftViewItem_PreviewMouseLeftButtonDown">
+                                        <Grid>
+                                            <TextBlock Text="D" Visibility="{Binding Info.IsDirectory}" Margin="10,0,0,0"></TextBlock>
+                                            <TextBlock Text="{Binding Info.ShortName}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="30,0,0,0" ></TextBlock>
+                                        </Grid>
+                                    </ListBoxItem>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </ScrollViewer>
+                </Grid>
             </Grid>
             <Grid Grid.Column="1">
-                <ScrollViewer>
-                    <ListBox Name="rightView" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <ListBoxItem Width="Auto" Height="30" x:Name="rightViewItem" PreviewMouseDoubleClick="rightViewItem_PreviewMouseDoubleClick">
-                                    <Grid>
-                                        <TextBlock Text="{Binding Info.ShortName}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="100,0,0,0" ></TextBlock>
-                                    </Grid>
-                                </ListBoxItem>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </ScrollViewer>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20"></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" Name="StatusStrR">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding ShortName}" MaxWidth="100"></TextBlock>
+                        <TextBlock Text="{Binding NumberOfFilesInside}"></TextBlock>
+                        <TextBlock Text="{Binding NumberOfDirsInside}"></TextBlock>
+                        <TextBlock Text="{Binding CreateTime}"></TextBlock>
+                    </StackPanel>
+                    
+                </Grid>
+                <Grid Grid.Row="1">
+                    <ScrollViewer>
+                        <ListBox Name="rightView" SelectionMode="Multiple" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" PreviewMouseLeftButtonDown="rightView_PreviewMouseLeftButtonDown" PreviewMouseDoubleClick="rightView_PreviewMouseLeftButtonDown" PreviewMouseWheel="rightView_PreviewMouseWheel">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <ListBoxItem Width="Auto" Height="30" x:Name="rightViewItem" PreviewMouseDoubleClick="rightViewItem_PreviewMouseDoubleClick" PreviewMouseLeftButtonDown="rightViewItem_PreviewMouseLeftButtonDown">
+                                        <Grid>
+                                            <TextBlock Text="{Binding Info.ShortName}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="100,0,0,0" ></TextBlock>
+                                        </Grid>
+                                    </ListBoxItem>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </ScrollViewer>
+                </Grid>
             </Grid>
         </Grid>
     </Grid>

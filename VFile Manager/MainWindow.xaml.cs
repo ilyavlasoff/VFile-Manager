@@ -24,20 +24,57 @@ namespace VFile_Manager
             InitializeComponent();
         }
 
+        private void MakeDirActive(FileOperator.Side _s)
+        {
+            FileOperator.ActiveDirectory = _s;
+            if (_s == FileOperator.Side.Left)
+            {
+                leftView.Background = Brushes.AliceBlue;
+                rightView.Background = Brushes.White;
+            }
+            else if (_s == FileOperator.Side.Right)
+            {
+                rightView.Background = Brushes.AliceBlue;
+                leftView.Background = Brushes.White;
+            }
+        }
+
+        private void UpdateView(FileOperator.Side _s)
+        {
+            ListBox someView = null;
+            ComboBox someRootComboBox = null;
+            TextBlock somePathRow = null;
+            Grid someStatusStr = null;
+            if (_s == FileOperator.Side.Left)
+            {
+                someView = leftView;
+                someRootComboBox = rootComboBoxL;
+                somePathRow = pathRowL;
+                someStatusStr = StatusStrL;
+            }
+            else if (_s == FileOperator.Side.Right)
+            {
+                someView = rightView;
+                someRootComboBox = rootComboBoxR;
+                somePathRow = pathRowR;
+                someStatusStr = StatusStrR;
+            }
+            someView.ItemsSource = null;
+            someView.ItemsSource = FileOperator.GetDirContainsList(_s);
+            List<String> drives = FileOperator.GetAllLogicalDrives().ToList();
+            String logicalDrive = File_Containers.FileDualContainer.ChooseContainer(_s).StoredDirectory.Info.LogicalDrive;
+            someRootComboBox.ItemsSource = drives;
+            someRootComboBox.SelectedItem = drives.Find((item) => logicalDrive.Equals(item));
+            somePathRow.Text = File_Containers.FileDualContainer.ChooseContainer(_s).StoredDirectory.Info.FullName;
+            someStatusStr.DataContext = File_Containers.FileDualContainer.ChooseContainer(_s).StoredDirectory.Info;
+            MakeDirActive(_s);
+        }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             FileOperator.InitilalDirs();
-            leftView.ItemsSource = FileOperator.GetDirContainsList(FileOperator.Side.Left);
-            rightView.ItemsSource = FileOperator.GetDirContainsList(FileOperator.Side.Right);
-            List<String> drives = FileOperator.GetAllLogicalDrives().ToList();
-            String logicalDriveL = File_Containers.FileDualContainer.ChooseContainer(FileOperator.Side.Left).StoredDirectory.Info.LogicalDrive;
-            String logicalDriveR = File_Containers.FileDualContainer.ChooseContainer(FileOperator.Side.Right).StoredDirectory.Info.LogicalDrive;
-            rootComboBoxL.ItemsSource = drives;
-            rootComboBoxR.ItemsSource = drives;
-            rootComboBoxR.SelectedItem = drives.Find((item) => logicalDriveR.Equals(item));
-            rootComboBoxL.SelectedItem = drives.Find((item) => logicalDriveL.Equals(item));
-            pathRowL.Text = File_Containers.FileDualContainer.ChooseContainer(FileOperator.Side.Left).StoredDirectory.Info.FullName;
-            pathRowR.Text = File_Containers.FileDualContainer.ChooseContainer(FileOperator.Side.Right).StoredDirectory.Info.FullName;
+            UpdateView(FileOperator.Side.Left);
+            UpdateView(FileOperator.Side.Right);
         }
 
         private void leftViewItem_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -53,9 +90,7 @@ namespace VFile_Manager
                 {
 
                 }
-                leftView.ItemsSource = null;
-                leftView.ItemsSource = FileOperator.GetDirContainsList(FileOperator.Side.Left);
-                pathRowL.Text = File_Containers.FileDualContainer.ChooseContainer(FileOperator.Side.Left).StoredDirectory.Info.FullName;
+                UpdateView(FileOperator.Side.Left);
             }
         }
 
@@ -72,26 +107,20 @@ namespace VFile_Manager
                 {
 
                 }
-                rightView.ItemsSource = null;
-                rightView.ItemsSource = FileOperator.GetDirContainsList(FileOperator.Side.Right);
-                pathRowR.Text = File_Containers.FileDualContainer.ChooseContainer(FileOperator.Side.Right).StoredDirectory.Info.FullName;
+                UpdateView(FileOperator.Side.Right);
             }
         }
 
         private void toParentDirButL_Click(object sender, RoutedEventArgs e)
         {
             FileOperator.NavigateToPreviousDirectory(FileOperator.Side.Left);
-            leftView.ItemsSource = null;
-            leftView.ItemsSource = FileOperator.GetDirContainsList(FileOperator.Side.Left);
-            pathRowL.Text = File_Containers.FileDualContainer.ChooseContainer(FileOperator.Side.Left).StoredDirectory.Info.FullName;
+            UpdateView(FileOperator.Side.Left);
         }
 
         private void toParentDirButR_Click(object sender, RoutedEventArgs e)
         {
             FileOperator.NavigateToPreviousDirectory(FileOperator.Side.Right);
-            rightView.ItemsSource = null;
-            rightView.ItemsSource = FileOperator.GetDirContainsList(FileOperator.Side.Right);
-            pathRowR.Text = File_Containers.FileDualContainer.ChooseContainer(FileOperator.Side.Right).StoredDirectory.Info.FullName;
+            UpdateView(FileOperator.Side.Right);
         }
 
         private void rootComboBoxL_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -106,8 +135,7 @@ namespace VFile_Manager
                 MessageBox.Show($"Directory {selectedItemL} doesnt exist or unavailable", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            leftView.ItemsSource = null;
-            leftView.ItemsSource = FileOperator.GetDirContainsList(FileOperator.Side.Left);
+            UpdateView(FileOperator.Side.Left);
         }
 
         private void rootComboBoxR_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -122,14 +150,71 @@ namespace VFile_Manager
                 MessageBox.Show($"Directory {selectedItemR} doesnt exist or unavailable", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            rightView.ItemsSource = null;
-            rightView.ItemsSource = FileOperator.GetDirContainsList(FileOperator.Side.Right);
+            UpdateView(FileOperator.Side.Right);
         }
 
         private void setBut_Click(object sender, RoutedEventArgs e)
         {
             SettingsWindow setWin = new SettingsWindow();
             setWin.ShowDialog();
+        }
+
+        private void leftView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            MakeDirActive(FileOperator.Side.Left);
+        }
+
+        private void leftView_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            MakeDirActive(FileOperator.Side.Left);
+        }
+
+        private void rightView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            MakeDirActive(FileOperator.Side.Right);
+        }
+
+        private void rightView_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            MakeDirActive(FileOperator.Side.Right);
+        }
+
+        private void leftViewItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            object item = (sender as ListBoxItem).DataContext;
+            leftView.SelectedIndex = leftView.Items.IndexOf(item);
+        }
+
+        private void rightViewItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            object item = (sender as ListBoxItem).DataContext;
+            rightView.SelectedIndex = rightView.Items.IndexOf(item);
+        }
+
+        private void mkfileBut_Click(object sender, RoutedEventArgs e)
+        {
+            CreateFileOrDir crDial = new CreateFileOrDir(false);
+            if (crDial.ShowDialog() == true)
+                UpdateView(FileOperator.ActiveDirectory);
+        }
+
+        private void mkdirBut_Click(object sender, RoutedEventArgs e)
+        {
+            CreateFileOrDir crDial = new CreateFileOrDir(true);
+            if (crDial.ShowDialog() == true)
+            {
+                UpdateView(FileOperator.ActiveDirectory);
+            }
+        }
+
+        private void copyBut_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void movBut_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

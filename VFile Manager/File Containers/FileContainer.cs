@@ -10,7 +10,32 @@ namespace VFile_Manager.File_Containers
     {
         public FileObjects.Dir StoredDirectory { get; private set; }
 
-        public List<FileObjects.IFileObject> DirContent { get; private set; }
+        public List<FileObjects.IFileObject> DirContent
+        {
+            get
+            {
+                List<FileObjects.IFileObject> content = new List<FileObjects.IFileObject>();
+                try
+                {
+                    IEnumerable<FileObjects.File> files = StoredDirectory.GetFiles();
+                    content.AddRange(files);
+                }
+                catch (Exception ex)
+                {
+
+                }
+                try
+                {
+                    IEnumerable<FileObjects.Dir> dirs = StoredDirectory.GetDirectories();
+                    content.AddRange(dirs);
+                }
+                catch (Exception ex)
+                {
+
+                }
+                return content;
+            }
+        }
 
         public FileContainer(String _path)
         {
@@ -20,10 +45,7 @@ namespace VFile_Manager.File_Containers
             }
         }
 
-        public FileContainer()
-        {
-            DirContent = new List<FileObjects.IFileObject>();
-        }
+        public FileContainer() {}
 
         public void GoToDirectory(String _directoryName)
         {
@@ -36,26 +58,6 @@ namespace VFile_Manager.File_Containers
             if (_directory.Exists())
             {
                 StoredDirectory = _directory;
-                DirContent.Clear();
-                try
-                {
-                    IEnumerable<FileObjects.File> files = StoredDirectory.GetFiles();
-                    DirContent.AddRange(files);
-                }
-                catch (Exception ex)
-                {
-
-                }
-                try
-                {
-                    IEnumerable<FileObjects.Dir> dirs = StoredDirectory.GetDirectories();
-                    DirContent.AddRange(dirs);
-                }
-                catch (Exception ex)
-                {
-
-                }
-
             }
         }
 

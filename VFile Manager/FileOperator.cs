@@ -9,6 +9,7 @@ namespace VFile_Manager
     static class FileOperator
     {
         public enum Side { Left, Right }
+        public static Side ActiveDirectory { get; set; }
         public static bool DirFirst { get; set; }
 
         public static void InitilalDirs()
@@ -74,5 +75,28 @@ namespace VFile_Manager
 
             }
         }
+
+        public static FileObjects.IFileObject MkDirFile (String _filepath, bool _isDir)
+        {
+            try
+            {
+                if (_isDir)
+                {
+                    DirectoryInfo dirinfo = Directory.CreateDirectory(_filepath);
+                    return new FileObjects.Dir(dirinfo);
+                }
+                else
+                {
+                    File.Create(_filepath);
+                    return new FileObjects.File(new FileInfo(_filepath));
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
     }
 }

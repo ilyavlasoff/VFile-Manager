@@ -14,3 +14,5 @@ C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\VFile_Manager.
 C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\VFile Manager.csproj.GenerateResource.cache
 C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\VFile Manager.exe
 C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\VFile Manager.pdb
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\CreateFileOrDir.g.cs
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\CreateFileOrDir.baml
