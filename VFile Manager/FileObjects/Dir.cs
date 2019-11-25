@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.IO;
 
 namespace VFile_Manager.FileObjects
@@ -65,19 +66,19 @@ namespace VFile_Manager.FileObjects
         }
 
 
-        public void Copy(String _path)
+        public void Copy(Dir _path)
         {
-            if (CurrentDirInfo.Exists && Directory.Exists(_path))
+            if (CurrentDirInfo.Exists && _path.Exists())
             {
 
             }
         }
 
-        public void Move(String _path)
+        public async void Move(Dir _path)
         {
-            if (CurrentDirInfo.Exists && Directory.Exists(_path))
+            if (CurrentDirInfo.Exists && _path.Exists())
             {
-                CurrentDirInfo.MoveTo(_path);
+                await Task.Run(() => CurrentDirInfo.MoveTo(_path.Info.FullName));
             }
         }
 
@@ -85,7 +86,7 @@ namespace VFile_Manager.FileObjects
         {
             if (_name.Length < MaxDirLen)
             {
-                Move(CurrentDirInfo.Parent + @"\" + _name);
+                //Move(CurrentDirInfo.Parent + @"\" + _name);
             }
         }
 

@@ -207,12 +207,75 @@ namespace VFile_Manager
             }
         }
 
+        private IEnumerable<FileObjects.IFileObject> GetSelectedItemsData()
+        {
+            ListBox someBox = null;
+            if (FileOperator.ActiveDirectory == FileOperator.Side.Left)
+                someBox = leftView;
+            else if (FileOperator.ActiveDirectory == FileOperator.Side.Right)
+                someBox = rightView;
+            var selected = someBox.SelectedItems;
+            return selected.Cast<FileObjects.IFileObject>();
+        }
+
         private void copyBut_Click(object sender, RoutedEventArgs e)
+        {
+            IEnumerable<FileObjects.IFileObject> selectedItems = GetSelectedItemsData();
+            File_Containers.FileContainer receiver = FileOperator.ActiveDirectory == FileOperator.Side.Left ? File_Containers.FileDualContainer.ChooseContainer(FileOperator.Side.Right) :
+                    File_Containers.FileDualContainer.ChooseContainer(FileOperator.Side.Left);
+            if (MessageBox.Show($"{selectedItems.Count()} items will be copied. Continue?", "Information", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    FileOperator.CopyFiles(selectedItems, receiver);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Unable to copy in this directory", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+            }
+            UpdateView(FileOperator.ActiveDirectory == FileOperator.Side.Left ? FileOperator.Side.Right : FileOperator.Side.Left);
+        }
+
+        private void movBut_Click(object sender, RoutedEventArgs e)
+        {
+            IEnumerable<FileObjects.IFileObject> selectedItems = GetSelectedItemsData();
+            File_Containers.FileContainer receiver = FileOperator.ActiveDirectory == FileOperator.Side.Left ? File_Containers.FileDualContainer.ChooseContainer(FileOperator.Side.Right) :
+                    File_Containers.FileDualContainer.ChooseContainer(FileOperator.Side.Left);
+            if (MessageBox.Show($"{selectedItems.Count()} items will be moved. Continue?", "Information", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    FileOperator.MoveFiles(selectedItems, receiver);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Unable to move in this directory", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                UpdateView(FileOperator.Side.Left);
+                UpdateView(FileOperator.Side.Right);
+            }
+        }
+
+        private void r_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateView(FileOperator.Side.Left);
+            UpdateView(FileOperator.Side.Right);
+        }
+
+        private void renBut_Click(object sender, RoutedEventArgs e)
         {
 
         }
 
-        private void movBut_Click(object sender, RoutedEventArgs e)
+        private void delBut_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void findBut_Click(object sender, RoutedEventArgs e)
         {
 
         }

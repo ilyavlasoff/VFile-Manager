@@ -116,6 +116,24 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Icons\icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\add_file.png" />
+    <Resource Include="Icons\add_folder.png" />
+    <Resource Include="Icons\compare.png" />
+    <Resource Include="Icons\copy.png" />
+    <Resource Include="Icons\delete.png" />
+    <Resource Include="Icons\find.png" />
+    <Resource Include="Icons\move.png" />
+    <Resource Include="Icons\rename.png" />
+    <Resource Include="Icons\settings.png" />
+    <Resource Include="Icons\up.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\dir.png" />
+    <Resource Include="Icons\file.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

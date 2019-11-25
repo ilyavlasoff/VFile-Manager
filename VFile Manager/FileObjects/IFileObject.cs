@@ -12,8 +12,8 @@ namespace VFile_Manager.FileObjects
         bool Exists();
         void Open();
         void Delete();
-        void Move(String _path);
-        void Copy(String _path);
+        void Move(Dir _path);
+        void Copy(Dir _path);
         void Rename(String _newName);
     }
 }

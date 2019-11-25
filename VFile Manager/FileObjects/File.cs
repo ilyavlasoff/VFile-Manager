@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace VFile_Manager.FileObjects
 {
@@ -39,20 +40,24 @@ namespace VFile_Manager.FileObjects
                 CurrentFileInfo.Delete();
             }
         }
-        public void Move(String _newPath)
+        public async void Move(Dir _path)
         {
-            if (CurrentFileInfo.Exists && System.IO.Directory.Exists(_newPath))
+            if (CurrentFileInfo.Exists && _path.Exists())
             {
-                CurrentFileInfo.MoveTo(_newPath);
+                await Task.Run(() => CurrentFileInfo.MoveTo(_path.Info.FullName + "\\" + CurrentFileInfo.Name));
             }
+            else throw new Exception("File or dir not found");
         }
-        public void Copy(String _newPath)
+
+        public async void Copy(Dir _path)
         {
-            if (CurrentFileInfo.Exists && System.IO.Directory.Exists(_newPath))
+            if (CurrentFileInfo.Exists && _path.Exists())
             {
-                CurrentFileInfo.CopyTo(_newPath);
+                await Task.Run(() => CurrentFileInfo.CopyTo(_path.Info.FullName + "\\" + CurrentFileInfo.Name));
             }
+            else throw new Exception("File or dir not found");
         }
+
         public void Rename(String _newName)
         {
             if (CurrentFileInfo.Exists)

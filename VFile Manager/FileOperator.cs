@@ -97,6 +97,36 @@ namespace VFile_Manager
             }
         }
 
+        public static void CopyFiles(IEnumerable<FileObjects.IFileObject> _files, File_Containers.FileContainer _dir)
+        {
+            FileObjects.Dir receiver = _dir.StoredDirectory;
+            try
+            {
+                foreach (FileObjects.IFileObject obj in _files)
+                {
+                    obj.Copy(receiver);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
+        public static void MoveFiles(IEnumerable<FileObjects.IFileObject> _files, File_Containers.FileContainer _dir)
+        {
+            FileObjects.Dir receiver = _dir.StoredDirectory;
+            try
+            {
+                foreach (FileObjects.IFileObject obj in _files)
+                {
+                    obj.Move(receiver);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

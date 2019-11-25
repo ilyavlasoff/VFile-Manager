@@ -28,6 +28,7 @@ namespace VFile_Manager.FileObjects
         public DateTime CreateTime { get; private set; }
         public DateTime LastWriteTime { get; private set; }
         public DateTime LastUsedTime { get; private set; }
+        public String IconPath { get; private set; }
         public FileDirInfo(object _info)
         {
             if (_info is DirectoryInfo)
@@ -77,6 +78,7 @@ namespace VFile_Manager.FileObjects
                 CreateTime = source.CreationTime;
                 LastUsedTime = source.LastAccessTime;
                 LastWriteTime = source.LastWriteTime;
+                IconPath = "/Icons/dir.png";
             }
             else if (_info is FileInfo)
             {
@@ -103,6 +105,7 @@ namespace VFile_Manager.FileObjects
                 CreateTime = source.CreationTime;
                 LastUsedTime = source.LastAccessTime;
                 LastWriteTime = source.LastWriteTime;
+                IconPath = "/Icons/file.png";
             }
         }
     }

@@ -1,4 +1,3 @@
-C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\VFile Manager.csprojAssemblyReference.cache
 C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\MainWindow.g.cs
 C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\App.g.cs
 C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\VFile Manager_MarkupCompile.cache
