@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VFile_Manager"
         mc:Ignorable="d"
-        Title="VExplorer" Height="600" Width="800" Loaded="Window_Loaded" Icon="/Icons/icon.png">
+        Title="VExplorer" Height="800" Width="1000" Loaded="Window_Loaded" Icon="/Icons/icon.png">
     <!--Window.Resources>
         <DataTemplate x:Key="rowTemplate">
             <Grid Width="Auto" Height="30" Name="fileRow" PreviewMouseDown="fileRow_PreviewMouseDown" >
@@ -20,34 +20,33 @@
             <RowDefinition Height="40"></RowDefinition>
             <RowDefinition Height="30"></RowDefinition>
             <RowDefinition></RowDefinition>
-            <RowDefinition Height="20"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                <Button x:Name="mkfileBut" Width="30" Height="30" Background="Transparent" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" Click="mkfileBut_Click">
+                <Button x:Name="mkfileBut" Width="30" Height="30"  Background="Transparent" ToolTip="Make file" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" Click="mkfileBut_Click">
                     <Image Source="Icons\add_file.png"></Image>
                 </Button>
-                <Button x:Name="mkdirBut" Width="30" Height="30" Background="Transparent" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" Click="mkdirBut_Click">
+                <Button x:Name="mkdirBut" Width="30" Height="30" Background="Transparent" ToolTip="Make folder" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" Click="mkdirBut_Click">
                     <Image Source="Icons\add_folder.png"></Image>
                 </Button>
-                <Button x:Name="copyBut" Width="30" Height="30" Background="Transparent" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" Click="copyBut_Click">
+                <Button x:Name="copyBut" Width="30" Height="30" Background="Transparent" ToolTip="Copy choosed" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" Click="copyBut_Click">
                     <Image Source="Icons\copy.png"></Image>
                 </Button>
-                <Button x:Name="movBut"  Width="30" Height="30" Background="Transparent" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" Click="movBut_Click">
+                <Button x:Name="movBut"  Width="30" Height="30" Background="Transparent" ToolTip="Move choosed" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" Click="movBut_Click">
                     <Image Source="Icons\move.png"></Image>
                 </Button>
-                <Button x:Name="renBut" Width="30" Height="30" Background="Transparent" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" Click="renBut_Click">
+                <Button x:Name="renBut" Width="30" Height="30" Background="Transparent" ToolTip="Rename" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" Click="renBut_Click">
                     <Image Source="Icons\rename.png"></Image>
                 </Button>
-                <Button x:Name="delBut" Width="30" Height="30" Background="Transparent" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" Click="delBut_Click">
+                <Button x:Name="delBut" Width="30" Height="30" Background="Transparent" ToolTip="Delete" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" Click="delBut_Click">
                     <Image Source="Icons\delete.png"></Image>
                 </Button>
-                <Button x:Name="findBut" Width="30" Height="30" Background="Transparent" BorderThickness="0"  HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" Click="findBut_Click">
+                <Button x:Name="findBut" Width="30" Height="30" Background="Transparent" BorderThickness="0" ToolTip="Find" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" Click="findBut_Click">
                     <Image Source="/Icons/find.png"></Image>
                 </Button>
                 <Button Content="R" Name="r" Click="r_Click"></Button>
             </StackPanel>
-            <Button x:Name="setBut" Width="30" Height="30" Background="Transparent" BorderThickness="0"  HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0" Click="setBut_Click">
+            <Button x:Name="setBut" Width="30" Height="30" Background="Transparent" BorderThickness="0" ToolTip="Settings" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0" Click="setBut_Click">
                 <Image Source="pack://application:/Icons/settings.png"></Image>
             </Button>
         </Grid>
@@ -57,20 +56,32 @@
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">
-                <Button DockPanel.Dock="Left" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="15,0,0,0" Background="White" BorderThickness="0" x:Name="toParentDirButL" Click="toParentDirButL_Click">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="0.5*"></ColumnDefinition>
+                    <ColumnDefinition Width="60"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Width="25" Height="25" VerticalAlignment="Center" Background="White" BorderThickness="0" x:Name="toParentDirButL" Click="toParentDirButL_Click">
                     <Image Source="Icons\up.png"></Image>
                 </Button>
-                <TextBlock DockPanel.Dock="Left" VerticalAlignment="Center" x:Name="pathRowL" HorizontalAlignment="Stretch" Margin="40,0,70,0"></TextBlock>
-                <ComboBox DockPanel.Dock="Right" Background="AliceBlue" VerticalAlignment="Center" x:Name="rootComboBoxL" HorizontalAlignment="Right" Width="50" SelectionChanged="rootComboBoxL_SelectionChanged"></ComboBox>
+                <TextBlock Grid.Column="1" VerticalAlignment="Center" x:Name="pathRowL" HorizontalAlignment="Left" Margin="10,0,0,0"></TextBlock>
+                <ComboBox Grid.Column="2" VerticalAlignment="Center" SelectedIndex="0" Margin="10,0,0,0" SelectionChanged="leftSortChooseBox_SelectionChanged" Name="leftSortChooseBox"></ComboBox>
+                <ComboBox Grid.Column="3" Margin="10,0,0,0" VerticalAlignment="Center" x:Name="rootComboBoxL" SelectionChanged="rootComboBoxL_SelectionChanged"></ComboBox>
             </Grid>
             <Grid Grid.Column="1">
-                <DockPanel>
-                    <Button DockPanel.Dock="Left" Width="25" VerticalAlignment="Center" Height="25" HorizontalAlignment="Left" Margin="20,0,0,0" Background="White" BorderThickness="0" x:Name="toParentDirButR" Click="toParentDirButR_Click">
-                        <Image Source="Icons\up.png"></Image>
-                    </Button>
-                    <TextBlock DockPanel.Dock="Left" x:Name="pathRowR" VerticalAlignment="Center" HorizontalAlignment="Stretch" Width="300"></TextBlock>
-                    <ComboBox DockPanel.Dock="Right" x:Name="rootComboBoxR" VerticalAlignment="Center" Width="50" SelectionChanged="rootComboBoxR_SelectionChanged"></ComboBox>
-                </DockPanel>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="0.5*"></ColumnDefinition>
+                    <ColumnDefinition Width="60"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Width="25" Height="25" VerticalAlignment="Center" Background="White" BorderThickness="0" x:Name="toParentDirButR" Click="toParentDirButR_Click">
+                    <Image Source="Icons\up.png"></Image>
+                </Button>
+                <TextBlock Grid.Column="1" VerticalAlignment="Center" x:Name="pathRowR" HorizontalAlignment="Left" Margin="10,0,0,0"></TextBlock>
+                <ComboBox Grid.Column="2" VerticalAlignment="Center" SelectedIndex="0" SelectionChanged="rightSortChooseBox_SelectionChanged" Margin="10,0,0,0" Name="rightSortChooseBox"></ComboBox>
+                <ComboBox Grid.Column="3" Margin="10,0,0,0" VerticalAlignment="Center" x:Name="rootComboBoxR" SelectionChanged="rootComboBoxR_SelectionChanged"></ComboBox>
             </Grid>
         </Grid>
         <Grid Grid.Row="2">
@@ -80,26 +91,28 @@
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="20"></RowDefinition>
                     <RowDefinition></RowDefinition>
+                    <RowDefinition Height="20"></RowDefinition>
                 </Grid.RowDefinitions>
-                <Grid Grid.Row="0" Name="StatusStrL">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding ShortName}" MaxWidth="100"></TextBlock>
-                        <TextBlock Text="{Binding NumberOfFilesInside}"></TextBlock>
-                        <TextBlock Text="{Binding NumberOfDirsInside}"></TextBlock>
-                        <TextBlock Text="{Binding CreateTime}"></TextBlock>
-                    </StackPanel>
-                </Grid>
-                <Grid Grid.Row="1">
+                <Grid Grid.Row="0">
                     <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden">
                         <ListBox Name="leftView" SelectionMode="Multiple" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" PreviewMouseLeftButtonDown="leftView_PreviewMouseLeftButtonDown" PreviewMouseWheel="leftView_PreviewMouseWheel" PreviewMouseDoubleClick="leftView_PreviewMouseLeftButtonDown">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <ListBoxItem Width="Auto" Height="30" x:Name="leftViewItem" PreviewMouseDoubleClick="leftViewItem_PreviewMouseDoubleClick" PreviewMouseLeftButtonDown="leftViewItem_PreviewMouseLeftButtonDown">
                                         <Grid>
-                                            <Image Source="{Binding Info.IconPath}" Width="25" Height="25" Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left"></Image>
-                                            <TextBlock Text="{Binding Info.ShortName}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="45,0,0,0" ></TextBlock>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="30"></ColumnDefinition>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                <ColumnDefinition Width="0.2*"></ColumnDefinition>
+                                                <ColumnDefinition Width="0.4*"></ColumnDefinition>
+                                                <ColumnDefinition Width="0.4*"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+                                            <Image Grid.Column="0" Source="{Binding Info.IconPath}" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Left"></Image>
+                                            <TextBlock Grid.Column="1" Text="{Binding Info.ShortName}" VerticalAlignment="Center" HorizontalAlignment="Left" ></TextBlock>
+                                            <TextBlock Grid.Column="2" Text="{Binding Info.Extension}" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
+                                            <TextBlock Grid.Column="3" Text="{Binding Info.Extensions}" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
+                                            <TextBlock Grid.Column="4" Text="{Binding Info.Time}" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
                                         </Grid>
                                     </ListBoxItem>
                                 </DataTemplate>
@@ -107,13 +120,21 @@
                         </ListBox>
                     </ScrollViewer>
                 </Grid>
+                <Grid Grid.Row="1" Name="StatusStrL">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding ShortName}" MaxWidth="100"></TextBlock>
+                        <TextBlock Text="{Binding NumberOfFilesInside}"></TextBlock>
+                        <TextBlock Text="{Binding NumberOfDirsInside}"></TextBlock>
+                        <TextBlock Text="{Binding CreateTime}"></TextBlock>
+                    </StackPanel>
+                </Grid>
             </Grid>
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="20"></RowDefinition>
                     <RowDefinition></RowDefinition>
+                    <RowDefinition Height="20"></RowDefinition>
                 </Grid.RowDefinitions>
-                <Grid Grid.Row="0" Name="StatusStrR">
+                <Grid Grid.Row="1" Name="StatusStrR">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding ShortName}" MaxWidth="100"></TextBlock>
                         <TextBlock Text="{Binding NumberOfFilesInside}"></TextBlock>
@@ -122,15 +143,25 @@
                     </StackPanel>
                     
                 </Grid>
-                <Grid Grid.Row="1">
+                <Grid Grid.Row="0">
                     <ScrollViewer>
                         <ListBox Name="rightView" SelectionMode="Multiple" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" PreviewMouseLeftButtonDown="rightView_PreviewMouseLeftButtonDown" PreviewMouseDoubleClick="rightView_PreviewMouseLeftButtonDown" PreviewMouseWheel="rightView_PreviewMouseWheel">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <ListBoxItem Width="Auto" Height="30" x:Name="rightViewItem" PreviewMouseDoubleClick="rightViewItem_PreviewMouseDoubleClick" PreviewMouseLeftButtonDown="rightViewItem_PreviewMouseLeftButtonDown">
                                         <Grid>
-                                            <Image Source="{Binding Info.IconPath}" Width="25" Height="25" Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left"></Image>
-                                            <TextBlock Text="{Binding Info.ShortName}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="45,0,0,0" ></TextBlock>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="30"></ColumnDefinition>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                <ColumnDefinition Width="0.2*"></ColumnDefinition>
+                                                <ColumnDefinition Width="0.4*"></ColumnDefinition>
+                                                <ColumnDefinition Width="0.4*"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+                                            <Image Grid.Column="0" Source="{Binding Info.IconPath}" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Left"></Image>
+                                            <TextBlock Grid.Column="1" Text="{Binding Info.ShortName}" VerticalAlignment="Center" HorizontalAlignment="Left" ></TextBlock>
+                                            <TextBlock Grid.Column="2" Text="{Binding Info.Extension}" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
+                                            <TextBlock Grid.Column="3" Text="{Binding Info.Extensions}" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
+                                            <TextBlock Grid.Column="4" Text="{Binding Info.Time}" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
                                         </Grid>
                                     </ListBoxItem>
                                 </DataTemplate>

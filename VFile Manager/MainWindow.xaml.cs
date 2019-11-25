@@ -45,12 +45,14 @@ namespace VFile_Manager
             ComboBox someRootComboBox = null;
             TextBlock somePathRow = null;
             Grid someStatusStr = null;
+            ComboBox someSortComboBox = null;
             if (_s == FileOperator.Side.Left)
             {
                 someView = leftView;
                 someRootComboBox = rootComboBoxL;
                 somePathRow = pathRowL;
                 someStatusStr = StatusStrL;
+                someSortComboBox = leftSortChooseBox;
             }
             else if (_s == FileOperator.Side.Right)
             {
@@ -58,14 +60,23 @@ namespace VFile_Manager
                 someRootComboBox = rootComboBoxR;
                 somePathRow = pathRowR;
                 someStatusStr = StatusStrR;
+                someSortComboBox = rightSortChooseBox;
             }
             someView.ItemsSource = null;
-            someView.ItemsSource = FileOperator.GetDirContainsList(_s);
+            try
+            {
+                someView.ItemsSource = FileOperator.SortList(FileOperator.GetDirContainsList(_s), someSortComboBox.SelectedIndex);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Cannot sort items: {ex.Message}. Show unsorted list", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                someView.ItemsSource = FileOperator.GetDirContainsList(_s);
+            }
             List<String> drives = FileOperator.GetAllLogicalDrives().ToList();
             String logicalDrive = File_Containers.FileDualContainer.ChooseContainer(_s).StoredDirectory.Info.LogicalDrive;
             someRootComboBox.ItemsSource = drives;
             someRootComboBox.SelectedItem = drives.Find((item) => logicalDrive.Equals(item));
-            somePathRow.Text = File_Containers.FileDualContainer.ChooseContainer(_s).StoredDirectory.Info.FullName;
+            somePathRow.Text = File_Containers.FileDualContainer.ChooseContainer(_s).StoredDirectory.Info.ShortName;
             someStatusStr.DataContext = File_Containers.FileDualContainer.ChooseContainer(_s).StoredDirectory.Info;
             MakeDirActive(_s);
         }
@@ -73,6 +84,10 @@ namespace VFile_Manager
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             FileOperator.InitilalDirs();
+            rightSortChooseBox.ItemsSource = FileOperator.sortTypes;
+            rightSortChooseBox.SelectedIndex = 0;
+            leftSortChooseBox.ItemsSource = FileOperator.sortTypes;
+            leftSortChooseBox.SelectedIndex = 0;
             UpdateView(FileOperator.Side.Left);
             UpdateView(FileOperator.Side.Right);
         }
@@ -193,14 +208,14 @@ namespace VFile_Manager
 
         private void mkfileBut_Click(object sender, RoutedEventArgs e)
         {
-            CreateFileOrDir crDial = new CreateFileOrDir(false);
+            CreateFileOrDir crDial = new CreateFileOrDir();
             if (crDial.ShowDialog() == true)
                 UpdateView(FileOperator.ActiveDirectory);
         }
 
         private void mkdirBut_Click(object sender, RoutedEventArgs e)
         {
-            CreateFileOrDir crDial = new CreateFileOrDir(true);
+            CreateFileOrDir crDial = new CreateFileOrDir(null, true);
             if (crDial.ShowDialog() == true)
             {
                 UpdateView(FileOperator.ActiveDirectory);
@@ -221,6 +236,11 @@ namespace VFile_Manager
         private void copyBut_Click(object sender, RoutedEventArgs e)
         {
             IEnumerable<FileObjects.IFileObject> selectedItems = GetSelectedItemsData();
+            if(selectedItems.Count() == 0)
+            {
+                MessageBox.Show("No elements selected", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             File_Containers.FileContainer receiver = FileOperator.ActiveDirectory == FileOperator.Side.Left ? File_Containers.FileDualContainer.ChooseContainer(FileOperator.Side.Right) :
                     File_Containers.FileDualContainer.ChooseContainer(FileOperator.Side.Left);
             if (MessageBox.Show($"{selectedItems.Count()} items will be copied. Continue?", "Information", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
@@ -241,6 +261,11 @@ namespace VFile_Manager
         private void movBut_Click(object sender, RoutedEventArgs e)
         {
             IEnumerable<FileObjects.IFileObject> selectedItems = GetSelectedItemsData();
+            if(selectedItems.Count() == 0)
+            {
+                MessageBox.Show("No elements selected", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             File_Containers.FileContainer receiver = FileOperator.ActiveDirectory == FileOperator.Side.Left ? File_Containers.FileDualContainer.ChooseContainer(FileOperator.Side.Right) :
                     File_Containers.FileDualContainer.ChooseContainer(FileOperator.Side.Left);
             if (MessageBox.Show($"{selectedItems.Count()} items will be moved. Continue?", "Information", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
@@ -267,17 +292,60 @@ namespace VFile_Manager
 
         private void renBut_Click(object sender, RoutedEventArgs e)
         {
-
+            IEnumerable<FileObjects.IFileObject> selectedItem = GetSelectedItemsData();
+            if (selectedItem.Count() == 0)
+            {
+                MessageBox.Show("No elements selected", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (selectedItem.Count() > 1)
+            {
+                MessageBox.Show("Multiple renaming is not supported", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            CreateFileOrDir cfd = new CreateFileOrDir(selectedItem.ToList()[0]);
+            if (cfd.ShowDialog() == true)
+            {
+                UpdateView(FileOperator.ActiveDirectory);
+            }
         }
 
         private void delBut_Click(object sender, RoutedEventArgs e)
         {
-
+            IEnumerable<FileObjects.IFileObject> selectedItems = GetSelectedItemsData();
+            if(selectedItems.Count() == 0)
+            {
+                MessageBox.Show("No elements selected", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (MessageBox.Show($"{selectedItems.Count()} items will be removed. THIS ACTION CAN NOT BE UNDONE. Continue?", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    FileOperator.Delete(selectedItems);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Cannot delete files : {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+            }
         }
 
         private void findBut_Click(object sender, RoutedEventArgs e)
         {
+            FindWindow fwindw = new FindWindow(File_Containers.FileDualContainer.ChooseContainer(FileOperator.ActiveDirectory).StoredDirectory);
+            fwindw.ShowDialog();
+        }
 
+        private void leftSortChooseBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateView(FileOperator.Side.Left);
+        }
+
+        private void rightSortChooseBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateView(FileOperator.Side.Right);
         }
     }
 }

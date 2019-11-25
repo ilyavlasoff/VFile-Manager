@@ -7,7 +7,7 @@ using System.IO;
 
 namespace VFile_Manager.FileObjects
 {
-    class FileDirInfo
+    public class FileDirInfo
     {
         public String ShortName { get; private set; }
         public String FullName { get; private set; }
@@ -29,6 +29,29 @@ namespace VFile_Manager.FileObjects
         public DateTime LastWriteTime { get; private set; }
         public DateTime LastUsedTime { get; private set; }
         public String IconPath { get; private set; }
+        public String Time
+        {
+            get
+            {
+                return CreateTime.ToString("dd.MM.yy hh:mm");
+            }
+        }
+        public String Extensions
+        {
+            get
+            {
+                String resStr = String.Empty;
+                resStr += IsReadonly ? "r" : "-";
+                resStr += IsArchive ? "a" : "-";
+                resStr += IsSystemFile ? "s" : "-";
+                resStr += IsHidden ? "h" : "-";
+                resStr += IsDirectory ? "d" : "-";
+                resStr += IsTemp ? "t" : "-";
+                resStr += IsCompressed ? "c" : "-";
+                resStr += IsEncrypted ? "e" : "-";
+                return resStr;
+            }
+        }
         public FileDirInfo(object _info)
         {
             if (_info is DirectoryInfo)

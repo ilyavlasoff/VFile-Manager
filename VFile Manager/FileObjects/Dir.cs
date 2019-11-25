@@ -7,7 +7,7 @@ using System.IO;
 
 namespace VFile_Manager.FileObjects
 {
-    class Dir : IFileObject
+    public class Dir : IFileObject
     {
         private const Int32 MaxDirLen = 255;
 
@@ -86,7 +86,7 @@ namespace VFile_Manager.FileObjects
         {
             if (_name.Length < MaxDirLen)
             {
-                //Move(CurrentDirInfo.Parent + @"\" + _name);
+                CurrentDirInfo.MoveTo(CurrentDirInfo.Parent.FullName + "\\" + _name);
             }
         }
 

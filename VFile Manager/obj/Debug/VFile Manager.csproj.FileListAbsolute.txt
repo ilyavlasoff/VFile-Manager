@@ -15,3 +15,6 @@ C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\VFile Manager.
 C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\VFile Manager.pdb
 C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\CreateFileOrDir.g.cs
 C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\CreateFileOrDir.baml
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\VFile Manager.csprojAssemblyReference.cache
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\FindWindow.g.cs
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\FindWindow.baml

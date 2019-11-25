@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VFile_Manager.FileObjects
 {
-    interface IFileObject
+    public interface IFileObject
     {
         FileDirInfo Info { get; }
         bool Exists();

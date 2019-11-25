@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace VFile_Manager.FileObjects
 {
-    class File : IFileObject
+    public class File : IFileObject
     {
         private FileInfo CurrentFileInfo;
         public FileDirInfo Info
@@ -62,7 +62,7 @@ namespace VFile_Manager.FileObjects
         {
             if (CurrentFileInfo.Exists)
             {
-                CurrentFileInfo.MoveTo(CurrentFileInfo.DirectoryName + _newName);
+                CurrentFileInfo.MoveTo(CurrentFileInfo.DirectoryName + "\\" + _newName);
             }
         }
     }
