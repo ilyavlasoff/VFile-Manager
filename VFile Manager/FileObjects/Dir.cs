@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Text.RegularExpressions;
+using VFile_Manager.FileObjects.FileDirInfo;
 
 namespace VFile_Manager.FileObjects
 {
@@ -13,11 +14,13 @@ namespace VFile_Manager.FileObjects
         private const Int32 MaxDirLen = 255;
 
         private DirectoryInfo CurrentDirInfo;
+        public IFileDirInfo Info { get; private set; }
         public Dir(DirectoryInfo _dinfo)
         {
             if (_dinfo.Exists)
             {
                 CurrentDirInfo = _dinfo;
+                Info = new DirInfo(CurrentDirInfo);
             }
             else throw new Exception("Directory not found");
         }
@@ -26,6 +29,7 @@ namespace VFile_Manager.FileObjects
             if (Directory.Exists(_dpath))
             {
                 CurrentDirInfo = new DirectoryInfo(_dpath);
+                Info = new DirInfo(CurrentDirInfo);
             }
             else throw new Exception("Directory not found");
         }
@@ -39,13 +43,6 @@ namespace VFile_Manager.FileObjects
             catch
             {
                 return null;
-            }
-        }
-        public FileDirInfo Info
-        {
-            get
-            {
-                return new FileDirInfo(CurrentDirInfo);
             }
         }
         public IEnumerable<File> GetFiles(String _filter = "*")

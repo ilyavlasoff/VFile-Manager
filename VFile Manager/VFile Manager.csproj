@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -33,6 +34,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -58,7 +60,9 @@
     <Compile Include="CreateFileOrDir.xaml.cs">
       <DependentUpon>CreateFileOrDir.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FileObjects\FileDirInfo.cs" />
+    <Compile Include="FileObjects\FileDirInfo\DirInfo.cs" />
+    <Compile Include="FileObjects\FileDirInfo\FilesInfo.cs" />
+    <Compile Include="FileObjects\FileDirInfo\IFileDirInfo.cs" />
     <Compile Include="FindWindow.xaml.cs">
       <DependentUpon>FindWindow.xaml</DependentUpon>
     </Compile>

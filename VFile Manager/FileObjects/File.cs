@@ -4,24 +4,20 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Threading.Tasks;
+using VFile_Manager.FileObjects.FileDirInfo;
 
 namespace VFile_Manager.FileObjects
 {
     public class File : IFileObject
     {
         private FileInfo CurrentFileInfo;
-        public FileDirInfo Info
-        {
-            get
-            {
-                return new FileDirInfo(CurrentFileInfo);
-            }
-        }
+        public IFileDirInfo Info { get; private set; }
         public File(FileInfo _finfo)
         {
             if (_finfo.Exists)
             {
                 CurrentFileInfo = _finfo;
+                Info = new FilesInfo(CurrentFileInfo);
             }
             else throw new Exception("File not found");
         }

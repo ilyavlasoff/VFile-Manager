@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VFile_Manager.FileObjects.FileDirInfo;
 
 namespace VFile_Manager.FileObjects
 {
     public interface IFileObject
     {
-        FileDirInfo Info { get; }
+        IFileDirInfo Info { get; }
         bool Exists();
         void Open();
         void Delete();

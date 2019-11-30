@@ -4,7 +4,10 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Timers;
 using System.Windows.Media;
+using VFile_Manager.FileObjects;
+using System.Threading;
 
 namespace VFile_Manager
 {
@@ -13,6 +16,8 @@ namespace VFile_Manager
     /// </summary>
     public partial class MainWindow : Window
     {
+        static System.Threading.Timer timer;
+        static object synclock = new object();
         public MainWindow()
         {
             InitializeComponent();
@@ -75,15 +80,21 @@ namespace VFile_Manager
             MakeDirActive(_s);
         }
 
+        private void UpdateAllViews(object obj)
+        {
+            lock (synclock)
+            {
+                UpdateView(FileOperator.Side.Left);
+                UpdateView(FileOperator.Side.Right);
+            }
+        }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             FileOperator.InitilalDirs();
             rightSortChooseBox.ItemsSource = FileOperator.sortTypes;
-            rightSortChooseBox.SelectedIndex = 0;
             leftSortChooseBox.ItemsSource = FileOperator.sortTypes;
-            leftSortChooseBox.SelectedIndex = 0;
-            //UpdateView(FileOperator.Side.Left);
-            //UpdateView(FileOperator.Side.Right);
+            //timer = new System.Threading.Timer (new TimerCallback(UpdateAllViews), null, 0, 3000);
         }
 
         private void leftViewItem_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -137,7 +148,7 @@ namespace VFile_Manager
             String selectedItemL = (sender as ComboBox).SelectedItem.ToString();
             try
             {
-                FileOperator.HandleOpenFileOrDir(new FileObjects.Dir(selectedItemL), FileOperator.Side.Left);
+                FileOperator.HandleOpenFileOrDir(new Dir(selectedItemL), FileOperator.Side.Left);
             }
             catch (Exception ex)
             {
@@ -152,7 +163,7 @@ namespace VFile_Manager
             String selectedItemR = (sender as ComboBox).SelectedItem.ToString();
             try
             {
-                FileOperator.HandleOpenFileOrDir(new FileObjects.Dir(selectedItemR), FileOperator.Side.Right);
+                FileOperator.HandleOpenFileOrDir(new Dir(selectedItemR), FileOperator.Side.Right);
             }
             catch (Exception ex)
             {
@@ -176,6 +187,14 @@ namespace VFile_Manager
         private void leftView_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             MakeDirActive(FileOperator.Side.Left);
+            if (e.Delta < 0)
+            {
+                leftScrollViewer.LineDown();
+            }
+            else
+            {
+                leftScrollViewer.LineUp();
+            }
         }
 
         private void rightView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -186,6 +205,14 @@ namespace VFile_Manager
         private void rightView_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             MakeDirActive(FileOperator.Side.Right);
+            if (e.Delta < 0)
+            {
+                rightScrollViewer.LineDown();
+            }
+            else
+            {
+                rightScrollViewer.LineUp();
+            }
         }
 
         private void leftViewItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -216,7 +243,7 @@ namespace VFile_Manager
             }
         }
 
-        private IEnumerable<FileObjects.IFileObject> GetSelectedItemsData()
+        private IEnumerable<IFileObject> GetSelectedItemsData()
         {
             ListBox someBox = null;
             if (FileOperator.ActiveDirectory == FileOperator.Side.Left)
@@ -224,12 +251,12 @@ namespace VFile_Manager
             else if (FileOperator.ActiveDirectory == FileOperator.Side.Right)
                 someBox = rightView;
             var selected = someBox.SelectedItems;
-            return selected.Cast<FileObjects.IFileObject>();
+            return selected.Cast<IFileObject>();
         }
 
         private void copyBut_Click(object sender, RoutedEventArgs e)
         {
-            IEnumerable<FileObjects.IFileObject> selectedItems = GetSelectedItemsData();
+            IEnumerable<IFileObject> selectedItems = GetSelectedItemsData();
             if(selectedItems.Count() == 0)
             {
                 MessageBox.Show("No elements selected", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -254,7 +281,7 @@ namespace VFile_Manager
 
         private void movBut_Click(object sender, RoutedEventArgs e)
         {
-            IEnumerable<FileObjects.IFileObject> selectedItems = GetSelectedItemsData();
+            IEnumerable<IFileObject> selectedItems = GetSelectedItemsData();
             if(selectedItems.Count() == 0)
             {
                 MessageBox.Show("No elements selected", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -280,13 +307,12 @@ namespace VFile_Manager
 
         private void r_Click(object sender, RoutedEventArgs e)
         {
-            UpdateView(FileOperator.Side.Left);
-            UpdateView(FileOperator.Side.Right);
+            
         }
 
         private void renBut_Click(object sender, RoutedEventArgs e)
         {
-            IEnumerable<FileObjects.IFileObject> selectedItem = GetSelectedItemsData();
+            IEnumerable<IFileObject> selectedItem = GetSelectedItemsData();
             if (selectedItem.Count() == 0)
             {
                 MessageBox.Show("No elements selected", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -306,7 +332,7 @@ namespace VFile_Manager
 
         private void delBut_Click(object sender, RoutedEventArgs e)
         {
-            IEnumerable<FileObjects.IFileObject> selectedItems = GetSelectedItemsData();
+            IEnumerable<IFileObject> selectedItems = GetSelectedItemsData();
             if(selectedItems.Count() == 0)
             {
                 MessageBox.Show("No elements selected", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -328,16 +354,16 @@ namespace VFile_Manager
 
         private void findBut_Click(object sender, RoutedEventArgs e)
         {
-            IEnumerable<FileObjects.IFileObject> sel = GetSelectedItemsData();
-            List<FileObjects.Dir> argumentsToFind = null;
+            IEnumerable<IFileObject> sel = GetSelectedItemsData();
+            List<Dir> argumentsToFind = null;
             if (sel.Count() == 0)
             {
-                argumentsToFind = new List<FileObjects.Dir> { File_Containers.FileDualContainer.ChooseContainer(FileOperator.ActiveDirectory).StoredDirectory };
+                argumentsToFind = new List<Dir> { File_Containers.FileDualContainer.ChooseContainer(FileOperator.ActiveDirectory).StoredDirectory };
 
             }
             else
             {
-                argumentsToFind = sel.ToList().FindAll((item) => item.Info.IsDirectory).Select((item) => item as FileObjects.Dir).ToList();
+                argumentsToFind = sel.ToList().FindAll((item) => item.Info.IsDirectory).Select((item) => item as Dir).ToList();
                 if (argumentsToFind == null)
                 {
                     MessageBox.Show("No directories selected! Select directories and try again", "Error", MessageBoxButton.OK, MessageBoxImage.Error);

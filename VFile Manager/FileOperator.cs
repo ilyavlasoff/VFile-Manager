@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using VFile_Manager.FileObjects;
 
 namespace VFile_Manager
 {
@@ -33,7 +34,7 @@ namespace VFile_Manager
             File_Containers.FileDualContainer.ChooseContainer(Side.Right).GoToDirectory(rightPath);
         }
 
-        public static IEnumerable<FileObjects.IFileObject> GetDirContainsList(Side _s)
+        public static IEnumerable<IFileObject> GetDirContainsList(Side _s)
         {
             return File_Containers.FileDualContainer.ChooseContainer(_s).DirContent;
         }
@@ -47,9 +48,9 @@ namespace VFile_Manager
 
         public static void HandleOpenFileOrDir(object _file, Side _s)
         {
-            if (_file is FileObjects.Dir)
+            if (_file is Dir)
             {
-                FileObjects.Dir choosedDir = _file as FileObjects.Dir;
+                Dir choosedDir = _file as Dir;
                 File_Containers.FileDualContainer.ChooseContainer(_s).GoToDirectory(choosedDir);
             }
             else if (_file is FileObjects.File)
@@ -66,7 +67,7 @@ namespace VFile_Manager
         {
             try
             {
-                FileObjects.Dir parentDir = File_Containers.FileDualContainer.ChooseContainer(_s).StoredDirectory.GetParentDirectory();
+                Dir parentDir = File_Containers.FileDualContainer.ChooseContainer(_s).StoredDirectory.GetParentDirectory();
                 if (parentDir != null)
                 {
                     File_Containers.FileDualContainer.ChooseContainer(_s).GoToDirectory(parentDir);
@@ -78,18 +79,18 @@ namespace VFile_Manager
             }
         }
 
-        public static FileObjects.IFileObject MkDirFile (String _filepath, bool _isDir)
+        public static IFileObject MkDirFile (String _filepath, bool _isDir)
         {
             try
             {
                 if (_isDir)
                 {
                     DirectoryInfo dirinfo = Directory.CreateDirectory(_filepath);
-                    return new FileObjects.Dir(dirinfo);
+                    return new Dir(dirinfo);
                 }
                 else
                 {
-                    File.Create(_filepath);
+                    System.IO.File.Create(_filepath);
                     return new FileObjects.File(new FileInfo(_filepath));
                 }
             }
@@ -99,12 +100,12 @@ namespace VFile_Manager
             }
         }
 
-        public static void CopyFiles(IEnumerable<FileObjects.IFileObject> _files, File_Containers.FileContainer _dir)
+        public static void CopyFiles(IEnumerable<IFileObject> _files, File_Containers.FileContainer _dir)
         {
-            FileObjects.Dir receiver = _dir.StoredDirectory;
+            Dir receiver = _dir.StoredDirectory;
             try
             {
-                foreach (FileObjects.IFileObject obj in _files)
+                foreach (IFileObject obj in _files)
                 {
                     obj.Copy(receiver);
                 }
@@ -115,12 +116,12 @@ namespace VFile_Manager
             }
         }
 
-        public static void MoveFiles(IEnumerable<FileObjects.IFileObject> _files, File_Containers.FileContainer _dir)
+        public static void MoveFiles(IEnumerable<IFileObject> _files, File_Containers.FileContainer _dir)
         {
-            FileObjects.Dir receiver = _dir.StoredDirectory;
+            Dir receiver = _dir.StoredDirectory;
             try
             {
-                foreach (FileObjects.IFileObject obj in _files)
+                foreach (IFileObject obj in _files)
                 {
                     obj.Move(receiver);
                 }
@@ -131,7 +132,7 @@ namespace VFile_Manager
             }
         }
 
-        public static void Rename(FileObjects.IFileObject _file, String _newname)
+        public static void Rename(IFileObject _file, String _newname)
         {
             try
             {
@@ -143,11 +144,11 @@ namespace VFile_Manager
             }
         }
 
-        public static void Delete(IEnumerable<FileObjects.IFileObject> _files)
+        public static void Delete(IEnumerable<IFileObject> _files)
         {
             try
             {
-                foreach (FileObjects.IFileObject fobj in _files)
+                foreach (IFileObject fobj in _files)
                 {
                     //fobj.Delete();
                 }
@@ -158,17 +159,17 @@ namespace VFile_Manager
             }
         }
 
-        public static IEnumerable<FileObjects.File> Find (IEnumerable<FileObjects.Dir> _dirsToFind, FileObjects.Dir.FindMode _mode, IEnumerable<String> _conditions)
+        public static IEnumerable<FileObjects.File> Find (IEnumerable<Dir> _dirsToFind, Dir.FindMode _mode, IEnumerable<String> _conditions)
         {
             List<FileObjects.File> foundedItems = new List<FileObjects.File>();
-            foreach (FileObjects.Dir file in _dirsToFind)
+            foreach (Dir file in _dirsToFind)
             {
                 foundedItems.AddRange(file.Find(_mode, _conditions.ToList()));
             }
             return foundedItems;
         }
 
-        public static List<FileObjects.IFileObject> SetActionForSort (List<FileObjects.IFileObject> _mas, Int32 _index)
+        public static List<IFileObject> SetActionForSort (List<IFileObject> _mas, Int32 _index)
         {
             switch (_index)
             {

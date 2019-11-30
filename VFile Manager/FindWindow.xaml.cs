@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using VFile_Manager.FileObjects;
 
 namespace VFile_Manager
 {
@@ -19,13 +20,13 @@ namespace VFile_Manager
     /// </summary>
     public partial class FindWindow : Window
     {
-        IEnumerable<FileObjects.Dir> DirsToFind;
+        IEnumerable<Dir> DirsToFind;
 
-        public FindWindow(IEnumerable<FileObjects.Dir> _initDir)
+        public FindWindow(IEnumerable<Dir> _initDir)
         {
             InitializeComponent();
             DirsToFind = _initDir;
-            foreach (FileObjects.IFileObject dir in _initDir)
+            foreach (IFileObject dir in _initDir)
                 dirsToFindBox.AppendText(dir.Info.FullName + "\n");
         }
 
@@ -37,7 +38,7 @@ namespace VFile_Manager
                 String[] searchConditions = searchConditionsAll.Split(',');
                 try
                 {
-                    IEnumerable<FileObjects.IFileObject> foundedFiles = FileOperator.Find(DirsToFind, FileObjects.Dir.FindMode.Name, searchConditions);
+                    IEnumerable<IFileObject> foundedFiles = FileOperator.Find(DirsToFind, Dir.FindMode.Name, searchConditions);
                     resultBox.ItemsSource = foundedFiles;
                 }
                 catch (Exception ex)
@@ -58,7 +59,7 @@ namespace VFile_Manager
                 List<String> conditionsDate = new List<string> { startDate.ToString(), endDate.ToString() };
                 try
                 {
-                    IEnumerable<FileObjects.IFileObject> foundedFiles = FileOperator.Find(DirsToFind, FileObjects.Dir.FindMode.Date, conditionsDate);
+                    IEnumerable<IFileObject> foundedFiles = FileOperator.Find(DirsToFind, Dir.FindMode.Date, conditionsDate);
                     resultBox.ItemsSource = foundedFiles;
                 }
                 catch (Exception ex)
@@ -127,7 +128,7 @@ namespace VFile_Manager
                 }
                 try
                 {
-                    IEnumerable<FileObjects.IFileObject> foundedFiles = FileOperator.Find(DirsToFind, FileObjects.Dir.FindMode.Size, conditions);
+                    IEnumerable<IFileObject> foundedFiles = FileOperator.Find(DirsToFind, Dir.FindMode.Size, conditions);
                     resultBox.ItemsSource = foundedFiles;
                 }
                 catch (Exception ex)

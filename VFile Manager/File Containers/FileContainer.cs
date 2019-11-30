@@ -3,18 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using VFile_Manager.FileObjects;
 
 namespace VFile_Manager.File_Containers
 {
     class FileContainer
     {
-        public FileObjects.Dir StoredDirectory { get; private set; }
+        public Dir StoredDirectory { get; private set; }
 
-        public List<FileObjects.IFileObject> DirContent
+        public List<IFileObject> DirContent
         {
             get
             {
-                List<FileObjects.IFileObject> content = new List<FileObjects.IFileObject>();
+                List<IFileObject> content = new List<FileObjects.IFileObject>();
                 try
                 {
                     IEnumerable<FileObjects.File> files = StoredDirectory.GetFiles();
@@ -26,7 +27,7 @@ namespace VFile_Manager.File_Containers
                 }
                 try
                 {
-                    IEnumerable<FileObjects.Dir> dirs = StoredDirectory.GetDirectories();
+                    IEnumerable<Dir> dirs = StoredDirectory.GetDirectories();
                     content.AddRange(dirs);
                 }
                 catch (Exception ex)
@@ -41,7 +42,7 @@ namespace VFile_Manager.File_Containers
         {
             if (Directory.Exists(_path))
             {
-                StoredDirectory = new FileObjects.Dir(_path);
+                StoredDirectory = new Dir(_path);
             }
         }
 
@@ -49,11 +50,11 @@ namespace VFile_Manager.File_Containers
 
         public void GoToDirectory(String _directoryName)
         {
-            FileObjects.Dir dinfo = new FileObjects.Dir(_directoryName);
+            FileObjects.Dir dinfo = new Dir(_directoryName);
             GoToDirectory(dinfo);
         }
 
-        public void GoToDirectory(FileObjects.Dir _directory)
+        public void GoToDirectory(Dir _directory)
         {
             if (_directory.Exists())
             {

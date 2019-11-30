@@ -69,7 +69,16 @@
                     <Image Source="Icons\up.png"></Image>
                 </Button>
                 <TextBlock Grid.Column="1" VerticalAlignment="Center" x:Name="pathRowL" HorizontalAlignment="Left" Margin="10,0,0,0"></TextBlock>
-                <ComboBox Grid.Column="2" VerticalAlignment="Center" SelectedIndex="0" Margin="10,0,0,0" SelectionChanged="leftSortChooseBox_SelectionChanged" Name="leftSortChooseBox"></ComboBox>
+                <ComboBox Grid.Column="2" VerticalAlignment="Center" Margin="10,0,0,0" SelectedIndex="0" SelectionChanged="leftSortChooseBox_SelectionChanged" Name="leftSortChooseBox" >
+                    <!--ComboBoxItem>Name asc.</>
+                    <ComboBoxItem>Name desc.</ComboBoxItem>
+                    <ComboBoxItem>Size asc.</ComboBoxItem>
+                    <ComboBoxItem>Size desc.</ComboBoxItem>
+                    <ComboBoxItem>Date asc.</ComboBoxItem>
+                    <ComboBoxItem>Date desc.</ComboBoxItem>
+                    <ComboBoxItem>Folders first</ComboBoxItem>
+                    <ComboBoxItem>Files first</ComboBoxItem-->
+                </ComboBox>
                 <ComboBox Grid.Column="3" Margin="10,0,0,0" VerticalAlignment="Center" x:Name="rootComboBoxL" SelectionChanged="rootComboBoxL_SelectionChanged"></ComboBox>
             </Grid>
             <Grid Grid.Column="1">
@@ -83,7 +92,16 @@
                     <Image Source="Icons\up.png"></Image>
                 </Button>
                 <TextBlock Grid.Column="1" VerticalAlignment="Center" x:Name="pathRowR" HorizontalAlignment="Left" Margin="10,0,0,0"></TextBlock>
-                <ComboBox Grid.Column="2" VerticalAlignment="Center" SelectedIndex="0" SelectionChanged="rightSortChooseBox_SelectionChanged" Margin="10,0,0,0" Name="rightSortChooseBox"></ComboBox>
+                <ComboBox Grid.Column="2" VerticalAlignment="Center" SelectedIndex="0" SelectionChanged="rightSortChooseBox_SelectionChanged" Margin="10,0,0,0" Name="rightSortChooseBox">
+                    <!--ComboBoxItem>Name asc.</>
+                    <ComboBoxItem>Name desc.</ComboBoxItem>
+                    <ComboBoxItem>Size asc.</ComboBoxItem>
+                    <ComboBoxItem>Size desc.</ComboBoxItem>
+                    <ComboBoxItem>Date asc.</ComboBoxItem>
+                    <ComboBoxItem>Date desc.</ComboBoxItem>
+                    <ComboBoxItem>Folders first</ComboBoxItem>
+                    <ComboBoxItem>Files first</ComboBoxItem-->
+                </ComboBox>
                 <ComboBox Grid.Column="3" Margin="10,0,0,0" VerticalAlignment="Center" x:Name="rootComboBoxR" SelectionChanged="rootComboBoxR_SelectionChanged"></ComboBox>
             </Grid>
         </Grid>
@@ -98,7 +116,7 @@
                     <RowDefinition Height="20"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0">
-                    <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden">
+                    <ScrollViewer Name="leftScrollViewer">
                         <ListBox Name="leftView" SelectionMode="Multiple" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" PreviewMouseLeftButtonDown="leftView_PreviewMouseLeftButtonDown" PreviewMouseWheel="leftView_PreviewMouseWheel" PreviewMouseDoubleClick="leftView_PreviewMouseLeftButtonDown">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
@@ -110,6 +128,7 @@
                                                 <ColumnDefinition Width="0.2*"></ColumnDefinition>
                                                 <ColumnDefinition Width="0.4*"></ColumnDefinition>
                                                 <ColumnDefinition Width="0.4*"></ColumnDefinition>
+                                                <ColumnDefinition Width="30"></ColumnDefinition>
                                             </Grid.ColumnDefinitions>
                                             <Image Grid.Column="0" Source="{Binding Info.IconPath}" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Left"></Image>
                                             <TextBlock Grid.Column="1" Text="{Binding Info.ShortName}" VerticalAlignment="Center" HorizontalAlignment="Left" ></TextBlock>
@@ -117,6 +136,15 @@
                                             <TextBlock Grid.Column="3" Text="{Binding Info.Extensions}" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
                                             <TextBlock Grid.Column="4" Text="{Binding Info.Time}" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
                                         </Grid>
+                                        <ListBoxItem.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Header="Open"></MenuItem>
+                                                <MenuItem Header="Move"></MenuItem>
+                                                <MenuItem Header="Copy"></MenuItem>
+                                                <MenuItem Header="Delete"></MenuItem>
+                                                <MenuItem Header="Information"></MenuItem>
+                                            </ContextMenu>
+                                        </ListBoxItem.ContextMenu>
                                     </ListBoxItem>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
@@ -147,7 +175,7 @@
                     
                 </Grid>
                 <Grid Grid.Row="0">
-                    <ScrollViewer>
+                    <ScrollViewer Name="rightScrollViewer">
                         <ListBox Name="rightView" SelectionMode="Multiple" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" PreviewMouseLeftButtonDown="rightView_PreviewMouseLeftButtonDown" PreviewMouseDoubleClick="rightView_PreviewMouseLeftButtonDown" PreviewMouseWheel="rightView_PreviewMouseWheel">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
@@ -166,6 +194,15 @@
                                             <TextBlock Grid.Column="3" Text="{Binding Info.Extensions}" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
                                             <TextBlock Grid.Column="4" Text="{Binding Info.Time}" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
                                         </Grid>
+                                        <ListBoxItem.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Header="Open"></MenuItem>
+                                                <MenuItem Header="Move"></MenuItem>
+                                                <MenuItem Header="Copy"></MenuItem>
+                                                <MenuItem Header="Delete"></MenuItem>
+                                                <MenuItem Header="Information"></MenuItem>
+                                            </ContextMenu>
+                                        </ListBoxItem.ContextMenu>
                                     </ListBoxItem>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
