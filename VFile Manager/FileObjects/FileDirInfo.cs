@@ -11,12 +11,12 @@ namespace VFile_Manager.FileObjects
     {
         public String ShortName { get; private set; }
         public String FullName { get; private set; }
-        public String Parent { get; private set; }
+        //public String Parent { get; private set; }
         public String LogicalDrive { get; private set; }
         public String Size { get; private set; }
         public String Extension { get; private set; }
-        public String NumberOfFilesInside { get; private set; }
-        public String NumberOfDirsInside { get; private set; }
+        //public String NumberOfFilesInside { get; private set; }
+        //public String NumberOfDirsInside { get; private set; }
         public bool IsReadonly { get; private set; }
         public bool IsArchive { get; private set; }
         public bool IsSystemFile { get; private set; }
@@ -26,8 +26,8 @@ namespace VFile_Manager.FileObjects
         public bool IsCompressed { get; private set; }
         public bool IsEncrypted { get; private set; }
         public DateTime CreateTime { get; private set; }
-        public DateTime LastWriteTime { get; private set; }
-        public DateTime LastUsedTime { get; private set; }
+        //public DateTime LastWriteTime { get; private set; }
+        //public DateTime LastUsedTime { get; private set; }
         public String IconPath { get; private set; }
         public String Time
         {
@@ -62,33 +62,33 @@ namespace VFile_Manager.FileObjects
                     throw new Exception("Unable to find directory");
                 ShortName = source.Name;
                 FullName = source.FullName;
-                try
-                {
-                    Parent = source.Parent.FullName;
-                }
-                catch (NullReferenceException)
-                {
-                    Parent = "No";
-                }
+                //try
+                //{
+                //    Parent = source.Parent.FullName;
+                //}
+                //catch (NullReferenceException)
+                //{
+                //    Parent = "No";
+                //}
                 LogicalDrive = source.Root.FullName;
                 Size = "?";
-                Extension = source.Extension;
-                try
-                {
-                    NumberOfDirsInside = source.GetDirectories().Count().ToString();
-                }
-                catch (UnauthorizedAccessException)
-                {
-                    NumberOfDirsInside = "?";
-                }
-                try
-                {
-                    NumberOfFilesInside = source.GetFiles().Count().ToString();
-                }
-                catch (UnauthorizedAccessException)
-                {
-                    NumberOfFilesInside = "?";
-                }
+                //Extension = source.Extension;
+                //try
+                //{
+                //    NumberOfDirsInside = source.GetDirectories().Count().ToString();
+                //}
+                //catch (UnauthorizedAccessException)
+                //{
+                //    NumberOfDirsInside = "?";
+                //}
+                //try
+                //{
+                //    NumberOfFilesInside = source.GetFiles().Count().ToString();
+                //}
+                //catch (UnauthorizedAccessException)
+                //{
+                //    NumberOfFilesInside = "?";
+                //}
                 FileAttributes attr = source.Attributes;
                 IsReadonly = (attr & FileAttributes.Hidden) != 0;
                 IsArchive = (attr & FileAttributes.Archive) != 0;
@@ -99,8 +99,8 @@ namespace VFile_Manager.FileObjects
                 IsTemp = (attr & FileAttributes.Temporary) != 0;
                 IsEncrypted = (attr & FileAttributes.Encrypted) != 0;
                 CreateTime = source.CreationTime;
-                LastUsedTime = source.LastAccessTime;
-                LastWriteTime = source.LastWriteTime;
+                //LastUsedTime = source.LastAccessTime;
+                //LastWriteTime = source.LastWriteTime;
                 IconPath = "/Icons/dir.png";
             }
             else if (_info is FileInfo)
@@ -110,12 +110,12 @@ namespace VFile_Manager.FileObjects
                     throw new Exception("File not exists");
                 ShortName = source.Name;
                 FullName = source.FullName;
-                Parent = source.DirectoryName;
+                //Parent = source.DirectoryName;
                 LogicalDrive = source.Directory.Root.FullName;
                 Size = source.Length.ToString();
                 Extension = source.Extension;
-                NumberOfDirsInside = String.Empty;
-                NumberOfFilesInside = String.Empty;
+                //NumberOfDirsInside = String.Empty;
+                //NumberOfFilesInside = String.Empty;
                 FileAttributes attr = source.Attributes;
                 IsReadonly = (attr & FileAttributes.Hidden) != 0;
                 IsArchive = (attr & FileAttributes.Archive) != 0;
@@ -126,8 +126,8 @@ namespace VFile_Manager.FileObjects
                 IsTemp = (attr & FileAttributes.Temporary) != 0;
                 IsEncrypted = (attr & FileAttributes.Encrypted) != 0;
                 CreateTime = source.CreationTime;
-                LastUsedTime = source.LastAccessTime;
-                LastWriteTime = source.LastWriteTime;
+                //LastUsedTime = source.LastAccessTime;
+                //LastWriteTime = source.LastWriteTime;
                 IconPath = "/Icons/file.png";
             }
         }

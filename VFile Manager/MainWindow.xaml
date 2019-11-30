@@ -44,6 +44,9 @@
                 <Button x:Name="findBut" Width="30" Height="30" Background="Transparent" BorderThickness="0" ToolTip="Find" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" Click="findBut_Click">
                     <Image Source="/Icons/find.png"></Image>
                 </Button>
+                <Button x:Name="compHash" Width="30" Height="30" Background="Transparent" BorderThickness="0" ToolTip="Compare Hash" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0">
+                    hash
+                </Button>
                 <Button Content="R" Name="r" Click="r_Click"></Button>
             </StackPanel>
             <Button x:Name="setBut" Width="30" Height="30" Background="Transparent" BorderThickness="0" ToolTip="Settings" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0" Click="setBut_Click">
@@ -100,7 +103,7 @@
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <ListBoxItem Width="Auto" Height="30" x:Name="leftViewItem" PreviewMouseDoubleClick="leftViewItem_PreviewMouseDoubleClick" PreviewMouseLeftButtonDown="leftViewItem_PreviewMouseLeftButtonDown">
-                                        <Grid>
+                                        <Grid x:Name="name">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="30"></ColumnDefinition>
                                                 <ColumnDefinition Width="*"></ColumnDefinition>

@@ -8,69 +8,81 @@
         Title="Find" Height="650" Width="800">
     <Grid>
         <StackPanel Orientation="Vertical">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30,0,0">
-                <TextBlock>Find in folders</TextBlock>
-                <StackPanel Orientation="Vertical" Margin="20,0,0,0">
-                    <ListBox MinHeight="50" MinWidth="600">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock></TextBlock>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+            <Grid>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30,0,0">
+                    <TextBlock>Find in folders</TextBlock>
+                    <StackPanel Orientation="Vertical" Margin="20,0,0,0">
+                        <RichTextBox MinHeight="50" MinWidth="600" x:Name="dirsToFindBox" >
+                            <FlowDocument>
+                                <Paragraph>
+                                    <TextBlock BaselineOffset="1" TextWrapping="Wrap"></TextBlock>
+                                </Paragraph>
+                            </FlowDocument>
+                        </RichTextBox>
+                    </StackPanel>
                 </StackPanel>
-            </StackPanel>
+            </Grid>
             <GroupBox Header="Search conditions" HorizontalAlignment="Center" Margin="20,0">
                 <Grid>
-                    <StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="10">
-                            <RadioButton Content="By name"></RadioButton>
-                            <StackPanel Orientation="Vertical" MinWidth="600" Margin="10,0,0,0">
-                                <TextBox x:Name="condByNameStr"></TextBox>
-                                <TextBlock>Enter the file names separated by commas, the unknown number
-                                    of characters should be marked with the symbol "*", the single character - "?"</TextBlock>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="10">
-                            <RadioButton Content="By size"></RadioButton>
-                            <StackPanel Orientation="Horizontal" Margin="10,0,0,0">
-                                <ComboBox SelectedIndex="0">
-                                    <ComboBoxItem>more</ComboBoxItem>
-                                    <ComboBoxItem>less</ComboBoxItem>
-                                    <ComboBoxItem>equals</ComboBoxItem>
-                                    <ComboBoxItem>between</ComboBoxItem>
-                                </ComboBox>
-                                <TextBox MinWidth="100" Margin="10,0"></TextBox>
-                                <ComboBox SelectedIndex="0">
-                                    <ComboBoxItem>KB</ComboBoxItem>
-                                    <ComboBoxItem>MB</ComboBoxItem>
-                                    <ComboBoxItem>GB</ComboBoxItem>
-                                </ComboBox>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="10">
-                            <RadioButton Content="By date:" VerticalAlignment="Center"></RadioButton>
-                            <StackPanel Orientation="Horizontal" MinWidth="600" Margin="10,0,0,0">
-                                <TextBlock VerticalAlignment="Center">from:</TextBlock>
-                                <DatePicker Name="lowDate" Margin="10,0"></DatePicker>
-                                <TextBlock VerticalAlignment="Center">to:</TextBlock>
-                                <DatePicker Name="highDate" Margin="10,0"></DatePicker>
-                            </StackPanel>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.3*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <RadioButton Name="byNameRadio" Content="By name" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center"></RadioButton>
+                    <RadioButton Name="bySizeRadio" Content="By size" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center"></RadioButton>
+                    <RadioButton Name="byDateRadio" Content="By date:" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center"></RadioButton>
+                    <StackPanel Orientation="Vertical" MinWidth="600" Margin="10,0,0,0" Grid.Column="1" Grid.Row="0">
+                        <TextBox x:Name="condByNameStr"></TextBox>
+                        <TextBlock TextWrapping="Wrap">Enter the file names separated by commas, the unknown number
+                                        of characters should be marked with the symbol "*", the single character - "?"</TextBlock>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="10,0,0,0" Grid.Column="1" Grid.Row="1">
+                        <ComboBox SelectedIndex="0" Name="modeSelectionSize">
+                            <ComboBoxItem>more</ComboBoxItem>
+                            <ComboBoxItem>less</ComboBoxItem>
+                            <ComboBoxItem>equals</ComboBoxItem>
+                            <ComboBoxItem>between</ComboBoxItem>
+                        </ComboBox>
+                        <TextBox MinWidth="100" Margin="10,0" Name="sizeSearchValue"></TextBox>
+                        <ComboBox SelectedIndex="0" Name="sizeSearchSize">
+                            <ComboBoxItem>KB</ComboBoxItem>
+                            <ComboBoxItem>MB</ComboBoxItem>
+                            <ComboBoxItem>GB</ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="10" Grid.Column="1" Grid.Row="2">
+
+                        <StackPanel Orientation="Horizontal" MinWidth="600" Margin="10,0,0,0">
+                            <TextBlock VerticalAlignment="Center">from:</TextBlock>
+                            <DatePicker Name="lowDate" Margin="10,0"></DatePicker>
+                            <TextBlock VerticalAlignment="Center">to:</TextBlock>
+                            <DatePicker Name="highDate" Margin="10,0"></DatePicker>
                         </StackPanel>
                     </StackPanel>
                 </Grid>
             </GroupBox>
             <Grid>
-                <ComboBox HorizontalAlignment="Left" VerticalAlignment="Center" Margin="50,10" SelectedIndex="0" Background="Transparent">
+                <ComboBox Name="sortModeBox" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="50,10" SelectedIndex="0" Background="Transparent">
                     <ComboBoxItem>By name</ComboBoxItem>
                     <ComboBoxItem>By size</ComboBoxItem>
                     <ComboBoxItem>Folders first</ComboBoxItem>
                     <ComboBoxItem>Files first</ComboBoxItem>
                 </ComboBox>
-                <Button Name="startSearchBut" Width="50" HorizontalAlignment="Right" Margin="50,10" Background="Transparent">Find</Button>
+                <Button Name="startSearchBut" Width="50" HorizontalAlignment="Right" Margin="50,10" Background="Transparent" Click="startSearchBut_Click">Find</Button>
             </Grid>
-            <ListBox Height="300" Width="750" Margin="20, 10" HorizontalAlignment="Center">
-                
+            <ListBox Height="300" Width="750" Margin="20, 10" HorizontalAlignment="Center" Name="resultBox">
+                <ListBox.ItemTemplate>
+                    <ItemContainerTemplate>
+                        <Grid>
+                            <TextBlock Text="{Binding Info.FullName}"/>
+                        </Grid>
+                    </ItemContainerTemplate>
+                </ListBox.ItemTemplate>
             </ListBox>
         </StackPanel>
     </Grid>

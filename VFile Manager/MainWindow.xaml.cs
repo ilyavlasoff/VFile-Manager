@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace VFile_Manager
 {
@@ -65,7 +59,7 @@ namespace VFile_Manager
             someView.ItemsSource = null;
             try
             {
-                someView.ItemsSource = FileOperator.SortList(FileOperator.GetDirContainsList(_s), someSortComboBox.SelectedIndex);
+                someView.ItemsSource = FileOperator.SetActionForSort(FileOperator.GetDirContainsList(_s).ToList(), someSortComboBox.SelectedIndex);
             }
             catch (Exception ex)
             {
@@ -88,8 +82,8 @@ namespace VFile_Manager
             rightSortChooseBox.SelectedIndex = 0;
             leftSortChooseBox.ItemsSource = FileOperator.sortTypes;
             leftSortChooseBox.SelectedIndex = 0;
-            UpdateView(FileOperator.Side.Left);
-            UpdateView(FileOperator.Side.Right);
+            //UpdateView(FileOperator.Side.Left);
+            //UpdateView(FileOperator.Side.Right);
         }
 
         private void leftViewItem_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -334,7 +328,28 @@ namespace VFile_Manager
 
         private void findBut_Click(object sender, RoutedEventArgs e)
         {
-            FindWindow fwindw = new FindWindow(File_Containers.FileDualContainer.ChooseContainer(FileOperator.ActiveDirectory).StoredDirectory);
+            IEnumerable<FileObjects.IFileObject> sel = GetSelectedItemsData();
+            List<FileObjects.Dir> argumentsToFind = null;
+            if (sel.Count() == 0)
+            {
+                argumentsToFind = new List<FileObjects.Dir> { File_Containers.FileDualContainer.ChooseContainer(FileOperator.ActiveDirectory).StoredDirectory };
+
+            }
+            else
+            {
+                argumentsToFind = sel.ToList().FindAll((item) => item.Info.IsDirectory).Select((item) => item as FileObjects.Dir).ToList();
+                if (argumentsToFind == null)
+                {
+                    MessageBox.Show("No directories selected! Select directories and try again", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                if (argumentsToFind.Count != sel.Count())
+                {
+                    if (MessageBox.Show($"Some selected elements dont support find operation. Find in {argumentsToFind.Count}", "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+                        return;
+                }
+            }
+            FindWindow fwindw = new FindWindow(argumentsToFind);
             fwindw.ShowDialog();
         }
 
@@ -347,5 +362,6 @@ namespace VFile_Manager
         {
             UpdateView(FileOperator.Side.Right);
         }
+
     }
 }

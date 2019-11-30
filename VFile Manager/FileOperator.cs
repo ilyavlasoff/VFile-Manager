@@ -13,6 +13,7 @@ namespace VFile_Manager
         public static bool DirFirst { get; set; }
 
         public static String[] sortTypes = { "Name asc.", "Name desc.", "Size asc.", "Size desc.", "Date asc.", "Date desc.", "Folders first", "Files first" };
+
         public static void InitilalDirs()
         {
             List<String> fileStartPaths = SavedDataReader.GetSavedStartingDirsFromXml().ToList();
@@ -157,33 +158,43 @@ namespace VFile_Manager
             }
         }
 
-        public static IEnumerable<FileObjects.IFileObject> SortList (IEnumerable<FileObjects.IFileObject> _mas, Int32 _index)
+        public static IEnumerable<FileObjects.File> Find (IEnumerable<FileObjects.Dir> _dirsToFind, FileObjects.Dir.FindMode _mode, IEnumerable<String> _conditions)
+        {
+            List<FileObjects.File> foundedItems = new List<FileObjects.File>();
+            foreach (FileObjects.Dir file in _dirsToFind)
+            {
+                foundedItems.AddRange(file.Find(_mode, _conditions.ToList()));
+            }
+            return foundedItems;
+        }
+
+        public static List<FileObjects.IFileObject> SetActionForSort (List<FileObjects.IFileObject> _mas, Int32 _index)
         {
             switch (_index)
             {
                 case 0:
-                    _mas.ToList().Sort((first, second) => String.Compare(first.Info.ShortName,second.Info.ShortName));
+                    _mas.Sort((first, second) => String.Compare(first.Info.ShortName, second.Info.ShortName));
                     break;
                 case 1:
-                    _mas.ToList().Sort((first, second) => String.Compare(second.Info.ShortName, first.Info.ShortName));
+                    _mas.Sort((first, second) => String.Compare(second.Info.ShortName, first.Info.ShortName));
                     break;
                 case 2:
-                    _mas.ToList().Sort((first, second) => String.Compare(first.Info.Size, second.Info.Size));
+                    _mas.Sort((first, second) => String.Compare(first.Info.Size, second.Info.Size));
                     break;
                 case 3:
-                    _mas.ToList().Sort((first, second) => String.Compare(second.Info.Size, first.Info.Size));
+                    _mas.Sort((first, second) => String.Compare(second.Info.Size, first.Info.Size));
                     break;
                 case 4:
-                    _mas.ToList().Sort((first, second) => DateTime.Compare(first.Info.CreateTime, second.Info.CreateTime));
+                    _mas.Sort((first, second) => DateTime.Compare(first.Info.CreateTime, second.Info.CreateTime));
                     break;
                 case 5:
-                    _mas.ToList().Sort((first, second) => DateTime.Compare(second.Info.CreateTime, first.Info.CreateTime));
+                    _mas.Sort((first, second) => DateTime.Compare(second.Info.CreateTime, first.Info.CreateTime));
                     break;
                 case 6:
-                    _mas.ToList().Sort((first, second) => Convert.ToInt32(first.Info.IsDirectory));
+                    _mas.Sort((first, second) => Convert.ToInt32(first.Info.IsDirectory));
                     break;
                 case 7:
-                    _mas.ToList().Sort((first, second) => Convert.ToInt32(!first.Info.IsDirectory));
+                    _mas.Sort((first, second) => Convert.ToInt32(!first.Info.IsDirectory));
                     break;
                 default:
                     throw new Exception("Out of range mas");
