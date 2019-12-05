@@ -55,7 +55,10 @@ namespace VFile_Manager
             }
             else if (_file is FileObjects.File)
             {
-                (_file as FileObjects.File).Open();
+                if (!(_file as FileObjects.File).Open())
+                {
+                    throw new Exception("Executor wasnt found");
+                }
             }
             else
             {

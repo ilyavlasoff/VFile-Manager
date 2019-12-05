@@ -57,7 +57,22 @@ namespace VFile_Manager.FileObjects
         {
             return CurrentDirInfo.Exists;
         }
-        
+
+        public override bool Equals (object _other)
+        {
+            if ((object)this == _other)
+                return true;
+            Dir _otherDir = _other as Dir;
+            if (_otherDir == null)
+                return false;
+            return _otherDir.CurrentDirInfo.CreationTime == this.CurrentDirInfo.CreationTime && _otherDir.CurrentDirInfo.FullName == this.CurrentDirInfo.FullName;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.CurrentDirInfo.GetHashCode();
+        }
+
         public void Open()
         {
 

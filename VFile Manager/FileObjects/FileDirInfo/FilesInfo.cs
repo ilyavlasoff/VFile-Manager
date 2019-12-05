@@ -164,7 +164,7 @@ namespace VFile_Manager.FileObjects.FileDirInfo
         {
             get
             {
-                return "/Icons/dir.png";
+                return "/Icons/file.png";
             }
         }
         public String Time

@@ -8,6 +8,8 @@ using System.Timers;
 using System.Windows.Media;
 using VFile_Manager.FileObjects;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Text;
 
 namespace VFile_Manager
 {
@@ -16,7 +18,6 @@ namespace VFile_Manager
     /// </summary>
     public partial class MainWindow : Window
     {
-        static System.Threading.Timer timer;
         static object synclock = new object();
         public MainWindow()
         {
@@ -28,17 +29,17 @@ namespace VFile_Manager
             FileOperator.ActiveDirectory = _s;
             if (_s == FileOperator.Side.Left)
             {
-                leftView.Background = Brushes.AliceBlue;
-                rightView.Background = Brushes.White;
+                Dispatcher.Invoke(() => leftView.Background = Brushes.AliceBlue);
+                Dispatcher.Invoke(() => rightView.Background = Brushes.White);
             }
             else if (_s == FileOperator.Side.Right)
             {
-                rightView.Background = Brushes.AliceBlue;
-                leftView.Background = Brushes.White;
+                Dispatcher.Invoke(() => rightView.Background = Brushes.AliceBlue);
+                Dispatcher.Invoke(() => leftView.Background = Brushes.White);
             }
         }
 
-        private void UpdateView(FileOperator.Side _s)
+        private void UpdateView(FileOperator.Side _s, IEnumerable<IFileObject> _files = null)
         {
             ListBox someView = null;
             ComboBox someRootComboBox = null;
@@ -47,46 +48,84 @@ namespace VFile_Manager
             ComboBox someSortComboBox = null;
             if (_s == FileOperator.Side.Left)
             {
-                someView = leftView;
-                someRootComboBox = rootComboBoxL;
-                somePathRow = pathRowL;
-                someStatusStr = StatusStrL;
-                someSortComboBox = leftSortChooseBox;
+                Dispatcher.Invoke(() => someView = leftView);
+                Dispatcher.Invoke(() => someRootComboBox = rootComboBoxL);
+                Dispatcher.Invoke(() => somePathRow = pathRowL);
+                Dispatcher.Invoke(() => someStatusStr = StatusStrL);
+                Dispatcher.Invoke(() => someSortComboBox = leftSortChooseBox);
             }
             else if (_s == FileOperator.Side.Right)
             {
-                someView = rightView;
-                someRootComboBox = rootComboBoxR;
-                somePathRow = pathRowR;
-                someStatusStr = StatusStrR;
-                someSortComboBox = rightSortChooseBox;
+                Dispatcher.Invoke(() => someView = rightView);
+                Dispatcher.Invoke(() => someRootComboBox = rootComboBoxR);
+                Dispatcher.Invoke(() => somePathRow = pathRowR);
+                Dispatcher.Invoke(() => someStatusStr = StatusStrR);
+                Dispatcher.Invoke(() => someSortComboBox = rightSortChooseBox);
             }
-            someView.ItemsSource = null;
-            try
-            {
-                someView.ItemsSource = FileOperator.SetActionForSort(FileOperator.GetDirContainsList(_s).ToList(), someSortComboBox.SelectedIndex);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Cannot sort items: {ex.Message}. Show unsorted list", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                someView.ItemsSource = FileOperator.GetDirContainsList(_s);
-            }
-            List<String> drives = FileOperator.GetAllLogicalDrives().ToList();
-            String logicalDrive = File_Containers.FileDualContainer.ChooseContainer(_s).StoredDirectory.Info.LogicalDrive;
-            someRootComboBox.ItemsSource = drives;
-            someRootComboBox.SelectedItem = drives.Find((item) => logicalDrive.Equals(item));
-            somePathRow.Text = File_Containers.FileDualContainer.ChooseContainer(_s).StoredDirectory.Info.ShortName;
-            someStatusStr.DataContext = File_Containers.FileDualContainer.ChooseContainer(_s).StoredDirectory.Info;
-            MakeDirActive(_s);
-        }
-
-        private void UpdateAllViews(object obj)
-        {
             lock (synclock)
             {
-                UpdateView(FileOperator.Side.Left);
-                UpdateView(FileOperator.Side.Right);
+                Dispatcher.Invoke(() => someView.ItemsSource = null);
+                List<IFileObject> listOfContFiles = null;
+                try
+                {
+                    listOfContFiles = (_files == null) ? FileOperator.GetDirContainsList(_s).ToList() : _files.ToList();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Unable to get data. Application will be closed", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                try
+                {
+                    Dispatcher.Invoke(() => someView.ItemsSource = FileOperator.SetActionForSort(listOfContFiles, someSortComboBox.SelectedIndex));
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Cannot sort items: {ex.Message}. Show unsorted list", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Dispatcher.Invoke(() => someView.ItemsSource = listOfContFiles);
+                }
+                List<String> drives = FileOperator.GetAllLogicalDrives().ToList();
+                String logicalDrive = File_Containers.FileDualContainer.ChooseContainer(_s).StoredDirectory.Info.LogicalDrive;
+                Dispatcher.Invoke(() => someRootComboBox.ItemsSource = drives);
+                Dispatcher.Invoke(() => someRootComboBox.SelectedItem = drives.Find((item) => logicalDrive.Equals(item)));
+                Dispatcher.Invoke(() => somePathRow.Text = File_Containers.FileDualContainer.ChooseContainer(_s).StoredDirectory.Info.ShortName);
+                Dispatcher.Invoke(() => someStatusStr.DataContext = File_Containers.FileDualContainer.ChooseContainer(_s).StoredDirectory.Info);
+                MakeDirActive(_s);
             }
+        }
+
+        async Task UpdateAllViews()
+        {
+            List<IFileObject> leftList = FileOperator.GetDirContainsList(FileOperator.Side.Left).ToList();
+            List<IFileObject> rightList = FileOperator.GetDirContainsList(FileOperator.Side.Right).ToList();
+            while (true)
+            {
+                await Task.Delay(1000);
+                List<IFileObject> leftNewList = FileOperator.GetDirContainsList(FileOperator.Side.Left).ToList();
+                List<IFileObject> rightNewList = FileOperator.GetDirContainsList(FileOperator.Side.Right).ToList();
+                if (!CompareSortedFileLists(leftList, leftNewList) || !CompareSortedFileLists(rightList, rightNewList) )
+                {
+                    //lock (synclock)
+                    {
+                        await Task.Run(() => UpdateView(FileOperator.Side.Left, leftNewList));
+                        await Task.Run(() => UpdateView(FileOperator.Side.Right, rightNewList));
+                    }
+                    leftList = leftNewList;
+                    rightList = rightNewList;
+                }
+            }
+        }
+
+        private bool CompareSortedFileLists(List<IFileObject> _first, List<IFileObject> _second)
+        {
+            if (_first.Count != _second.Count)
+                return false;
+            for (Int32 i = 0; i!= _first.Count; ++i)
+            {
+                if (!_first[i].Equals(_second[i]))
+                    return false;
+            }
+            return true;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -94,10 +133,10 @@ namespace VFile_Manager
             FileOperator.InitilalDirs();
             rightSortChooseBox.ItemsSource = FileOperator.sortTypes;
             leftSortChooseBox.ItemsSource = FileOperator.sortTypes;
-            //timer = new System.Threading.Timer (new TimerCallback(UpdateAllViews), null, 0, 3000);
+            UpdateAllViews();
         }
 
-        private void leftViewItem_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        async private void leftViewItem_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             object obj = (sender as ListBoxItem).DataContext;
             if (obj != null)
@@ -108,13 +147,14 @@ namespace VFile_Manager
                 }
                 catch (Exception ex)
                 {
-
+                    MessageBox.Show($"This item can not be opened. Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
                 }
-                UpdateView(FileOperator.Side.Left);
+                await Task.Run(() => UpdateView(FileOperator.Side.Left));
             }
         }
 
-        private void rightViewItem_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        async private void rightViewItem_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             object obj = (sender as ListBoxItem).DataContext;
             if (obj != null)
@@ -127,23 +167,23 @@ namespace VFile_Manager
                 {
 
                 }
-                UpdateView(FileOperator.Side.Right);
+                await Task.Run(() => UpdateView(FileOperator.Side.Right));
             }
         }
 
-        private void toParentDirButL_Click(object sender, RoutedEventArgs e)
+        async private void toParentDirButL_Click(object sender, RoutedEventArgs e)
         {
             FileOperator.NavigateToPreviousDirectory(FileOperator.Side.Left);
-            UpdateView(FileOperator.Side.Left);
+            await Task.Run(() => UpdateView(FileOperator.Side.Left));
         }
 
-        private void toParentDirButR_Click(object sender, RoutedEventArgs e)
+        async private void toParentDirButR_Click(object sender, RoutedEventArgs e)
         {
             FileOperator.NavigateToPreviousDirectory(FileOperator.Side.Right);
-            UpdateView(FileOperator.Side.Right);
+            await Task.Run(() => UpdateView(FileOperator.Side.Right));
         }
 
-        private void rootComboBoxL_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        async private void rootComboBoxL_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             String selectedItemL = (sender as ComboBox).SelectedItem.ToString();
             try
@@ -155,10 +195,10 @@ namespace VFile_Manager
                 MessageBox.Show($"Directory {selectedItemL} doesnt exist or unavailable", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            UpdateView(FileOperator.Side.Left);
+            await Task.Run(() => UpdateView(FileOperator.Side.Left));
         }
 
-        private void rootComboBoxR_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        async private void rootComboBoxR_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             String selectedItemR = (sender as ComboBox).SelectedItem.ToString();
             try
@@ -170,7 +210,7 @@ namespace VFile_Manager
                 MessageBox.Show($"Directory {selectedItemR} doesnt exist or unavailable", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            UpdateView(FileOperator.Side.Right);
+            await Task.Run(() => UpdateView(FileOperator.Side.Right));
         }
 
         private void setBut_Click(object sender, RoutedEventArgs e)
@@ -227,19 +267,19 @@ namespace VFile_Manager
             rightView.SelectedIndex = rightView.Items.IndexOf(item);
         }
 
-        private void mkfileBut_Click(object sender, RoutedEventArgs e)
+        async private void mkfileBut_Click(object sender, RoutedEventArgs e)
         {
             CreateFileOrDir crDial = new CreateFileOrDir();
             if (crDial.ShowDialog() == true)
-                UpdateView(FileOperator.ActiveDirectory);
+                await Task.Run(() => UpdateView(FileOperator.ActiveDirectory));
         }
 
-        private void mkdirBut_Click(object sender, RoutedEventArgs e)
+        async private void mkdirBut_Click(object sender, RoutedEventArgs e)
         {
             CreateFileOrDir crDial = new CreateFileOrDir(null, true);
             if (crDial.ShowDialog() == true)
             {
-                UpdateView(FileOperator.ActiveDirectory);
+                await Task.Run(() => UpdateView(FileOperator.ActiveDirectory));
             }
         }
 
@@ -254,7 +294,7 @@ namespace VFile_Manager
             return selected.Cast<IFileObject>();
         }
 
-        private void copyBut_Click(object sender, RoutedEventArgs e)
+        async private void copyBut_Click(object sender, RoutedEventArgs e)
         {
             IEnumerable<IFileObject> selectedItems = GetSelectedItemsData();
             if(selectedItems.Count() == 0)
@@ -276,10 +316,10 @@ namespace VFile_Manager
                     return;
                 }
             }
-            UpdateView(FileOperator.ActiveDirectory == FileOperator.Side.Left ? FileOperator.Side.Right : FileOperator.Side.Left);
+            await Task.Run(() => UpdateView(FileOperator.ActiveDirectory == FileOperator.Side.Left ? FileOperator.Side.Right : FileOperator.Side.Left));
         }
 
-        private void movBut_Click(object sender, RoutedEventArgs e)
+        async private void movBut_Click(object sender, RoutedEventArgs e)
         {
             IEnumerable<IFileObject> selectedItems = GetSelectedItemsData();
             if(selectedItems.Count() == 0)
@@ -300,17 +340,12 @@ namespace VFile_Manager
                     MessageBox.Show("Unable to move in this directory", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
-                UpdateView(FileOperator.Side.Left);
-                UpdateView(FileOperator.Side.Right);
+                await Task.Run(() => UpdateView(FileOperator.Side.Left));
+                await Task.Run(() => UpdateView(FileOperator.Side.Right));
             }
         }
 
-        private void r_Click(object sender, RoutedEventArgs e)
-        {
-            
-        }
-
-        private void renBut_Click(object sender, RoutedEventArgs e)
+        async private void renBut_Click(object sender, RoutedEventArgs e)
         {
             IEnumerable<IFileObject> selectedItem = GetSelectedItemsData();
             if (selectedItem.Count() == 0)
@@ -326,7 +361,7 @@ namespace VFile_Manager
             CreateFileOrDir cfd = new CreateFileOrDir(selectedItem.ToList()[0]);
             if (cfd.ShowDialog() == true)
             {
-                UpdateView(FileOperator.ActiveDirectory);
+                await Task.Run(() => UpdateView(FileOperator.ActiveDirectory));
             }
         }
 
@@ -379,14 +414,14 @@ namespace VFile_Manager
             fwindw.ShowDialog();
         }
 
-        private void leftSortChooseBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        async private void leftSortChooseBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            UpdateView(FileOperator.Side.Left);
+            await Task.Run (() => UpdateView(FileOperator.Side.Left));
         }
 
-        private void rightSortChooseBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        async private void rightSortChooseBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            UpdateView(FileOperator.Side.Right);
+            await Task.Run (() => UpdateView(FileOperator.Side.Right));
         }
 
     }

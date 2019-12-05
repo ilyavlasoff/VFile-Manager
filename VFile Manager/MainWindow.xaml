@@ -24,33 +24,32 @@
         <Grid Grid.Row="0">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                 <Button x:Name="mkfileBut" Width="30" Height="30"  Background="Transparent" ToolTip="Make file" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" Click="mkfileBut_Click">
-                    <Image Source="Icons\add_file.png"></Image>
+                    <Image Source="Icons\add_file.png" RenderOptions.BitmapScalingMode="Fant" SnapsToDevicePixels="True"></Image>
                 </Button>
                 <Button x:Name="mkdirBut" Width="30" Height="30" Background="Transparent" ToolTip="Make folder" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" Click="mkdirBut_Click">
-                    <Image Source="Icons\add_folder.png"></Image>
+                    <Image Source="Icons\add_folder.png" RenderOptions.BitmapScalingMode="Fant" SnapsToDevicePixels="True"></Image>
                 </Button>
                 <Button x:Name="copyBut" Width="30" Height="30" Background="Transparent" ToolTip="Copy choosed" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" Click="copyBut_Click">
-                    <Image Source="Icons\copy.png"></Image>
+                    <Image Source="Icons\copy.png" RenderOptions.BitmapScalingMode="Fant" SnapsToDevicePixels="True"></Image>
                 </Button>
                 <Button x:Name="movBut"  Width="30" Height="30" Background="Transparent" ToolTip="Move choosed" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" Click="movBut_Click">
-                    <Image Source="Icons\move.png"></Image>
+                    <Image Source="Icons\move.png" RenderOptions.BitmapScalingMode="Fant" SnapsToDevicePixels="True"></Image>
                 </Button>
                 <Button x:Name="renBut" Width="30" Height="30" Background="Transparent" ToolTip="Rename" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" Click="renBut_Click">
-                    <Image Source="Icons\rename.png"></Image>
+                    <Image Source="Icons\rename.png" RenderOptions.BitmapScalingMode="Fant" SnapsToDevicePixels="True"></Image>
                 </Button>
                 <Button x:Name="delBut" Width="30" Height="30" Background="Transparent" ToolTip="Delete" BorderThickness="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" Click="delBut_Click">
-                    <Image Source="Icons\delete.png"></Image>
+                    <Image Source="Icons\delete.png" RenderOptions.BitmapScalingMode="Fant" SnapsToDevicePixels="True"></Image>
                 </Button>
                 <Button x:Name="findBut" Width="30" Height="30" Background="Transparent" BorderThickness="0" ToolTip="Find" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" Click="findBut_Click">
-                    <Image Source="/Icons/find.png"></Image>
+                    <Image Source="/Icons/find.png" RenderOptions.BitmapScalingMode="Fant" SnapsToDevicePixels="True"></Image>
                 </Button>
                 <Button x:Name="compHash" Width="30" Height="30" Background="Transparent" BorderThickness="0" ToolTip="Compare Hash" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0">
                     hash
                 </Button>
-                <Button Content="R" Name="r" Click="r_Click"></Button>
             </StackPanel>
             <Button x:Name="setBut" Width="30" Height="30" Background="Transparent" BorderThickness="0" ToolTip="Settings" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0" Click="setBut_Click">
-                <Image Source="pack://application:/Icons/settings.png"></Image>
+                <Image Source="pack://application:/Icons/settings.png" RenderOptions.BitmapScalingMode="Fant" SnapsToDevicePixels="True"></Image>
             </Button>
         </Grid>
         <Grid Grid.Row="1">
@@ -66,7 +65,7 @@
                     <ColumnDefinition Width="60"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Button Grid.Column="0" Width="25" Height="25" VerticalAlignment="Center" Background="White" BorderThickness="0" x:Name="toParentDirButL" Click="toParentDirButL_Click">
-                    <Image Source="Icons\up.png"></Image>
+                    <Image Source="Icons\up.png" RenderOptions.BitmapScalingMode="Fant" SnapsToDevicePixels="True"></Image>
                 </Button>
                 <TextBlock Grid.Column="1" VerticalAlignment="Center" x:Name="pathRowL" HorizontalAlignment="Left" Margin="10,0,0,0"></TextBlock>
                 <ComboBox Grid.Column="2" VerticalAlignment="Center" Margin="10,0,0,0" SelectedIndex="0" SelectionChanged="leftSortChooseBox_SelectionChanged" Name="leftSortChooseBox" >
@@ -89,7 +88,7 @@
                     <ColumnDefinition Width="60"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Button Grid.Column="0" Width="25" Height="25" VerticalAlignment="Center" Background="White" BorderThickness="0" x:Name="toParentDirButR" Click="toParentDirButR_Click">
-                    <Image Source="Icons\up.png"></Image>
+                    <Image Source="Icons\up.png" RenderOptions.BitmapScalingMode="Fant" SnapsToDevicePixels="True"></Image>
                 </Button>
                 <TextBlock Grid.Column="1" VerticalAlignment="Center" x:Name="pathRowR" HorizontalAlignment="Left" Margin="10,0,0,0"></TextBlock>
                 <ComboBox Grid.Column="2" VerticalAlignment="Center" SelectedIndex="0" SelectionChanged="rightSortChooseBox_SelectionChanged" Margin="10,0,0,0" Name="rightSortChooseBox">
@@ -123,14 +122,19 @@
                                     <ListBoxItem Width="Auto" Height="30" x:Name="leftViewItem" PreviewMouseDoubleClick="leftViewItem_PreviewMouseDoubleClick" PreviewMouseLeftButtonDown="leftViewItem_PreviewMouseLeftButtonDown">
                                         <Grid x:Name="name">
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="30"></ColumnDefinition>
+                                                <!--ColumnDefinition Width="30"></>
                                                 <ColumnDefinition Width="*"></ColumnDefinition>
                                                 <ColumnDefinition Width="0.2*"></ColumnDefinition>
                                                 <ColumnDefinition Width="0.4*"></ColumnDefinition>
                                                 <ColumnDefinition Width="0.4*"></ColumnDefinition>
+                                                <ColumnDefinition Width="30"></ColumnDefinition-->
                                                 <ColumnDefinition Width="30"></ColumnDefinition>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                <ColumnDefinition Width="30"></ColumnDefinition>
+                                                <ColumnDefinition Width="60"></ColumnDefinition>
+                                                <ColumnDefinition Width="90"></ColumnDefinition>
                                             </Grid.ColumnDefinitions>
-                                            <Image Grid.Column="0" Source="{Binding Info.IconPath}" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Left"></Image>
+                                            <Image Grid.Column="0" Source="{Binding Info.IconPath}" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Left" RenderOptions.BitmapScalingMode="Fant" SnapsToDevicePixels="True"></Image>
                                             <TextBlock Grid.Column="1" Text="{Binding Info.ShortName}" VerticalAlignment="Center" HorizontalAlignment="Left" ></TextBlock>
                                             <TextBlock Grid.Column="2" Text="{Binding Info.Extension}" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
                                             <TextBlock Grid.Column="3" Text="{Binding Info.Extensions}" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
@@ -188,7 +192,7 @@
                                                 <ColumnDefinition Width="0.4*"></ColumnDefinition>
                                                 <ColumnDefinition Width="0.4*"></ColumnDefinition>
                                             </Grid.ColumnDefinitions>
-                                            <Image Grid.Column="0" Source="{Binding Info.IconPath}" Width="25" Height="25" VerticalAlignment="Center" HorizontalAlignment="Left"></Image>
+                                            <Image Grid.Column="0" Source="{Binding Info.IconPath}" Width="25" Height="25" RenderOptions.BitmapScalingMode="Fant" SnapsToDevicePixels="True" VerticalAlignment="Center" HorizontalAlignment="Left"></Image>
                                             <TextBlock Grid.Column="1" Text="{Binding Info.ShortName}" VerticalAlignment="Center" HorizontalAlignment="Left" ></TextBlock>
                                             <TextBlock Grid.Column="2" Text="{Binding Info.Extension}" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
                                             <TextBlock Grid.Column="3" Text="{Binding Info.Extensions}" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
