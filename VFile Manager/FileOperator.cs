@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 using System.Text;
 using System.IO;
 using VFile_Manager.FileObjects;
@@ -206,5 +207,20 @@ namespace VFile_Manager
             return _mas;
         }
 
+
+        public static bool StartCmd (Dir _dir)
+        {
+            Process openProc = new Process();
+            openProc.StartInfo.FileName = "cmd";
+            openProc.StartInfo.Arguments = $"\"{_dir.Info.FullName}\"";
+            try
+            {
+                return openProc.Start();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

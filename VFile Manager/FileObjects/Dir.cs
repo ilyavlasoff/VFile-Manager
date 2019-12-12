@@ -73,11 +73,6 @@ namespace VFile_Manager.FileObjects
             return this.CurrentDirInfo.GetHashCode();
         }
 
-        public void Open()
-        {
-
-        }
-
         public enum FindMode { Size, Name, Date }
 
         public IEnumerable<File> Find (FindMode _findmode, List<String> _criteria)

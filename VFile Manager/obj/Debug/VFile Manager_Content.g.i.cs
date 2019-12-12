@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("icons/dir.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("icons/file.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("icons/cmd.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("icons/hash.png")]
 
 

@@ -255,16 +255,38 @@ namespace VFile_Manager
             }
         }
 
-        private void leftViewItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void leftViewItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             object item = (sender as ListBoxItem).DataContext;
-            leftView.SelectedIndex = leftView.Items.IndexOf(item);
+            Int32 selIndex = leftView.Items.IndexOf(item);
+            if (selIndex == -1) return;
+            object clickedItem = leftView.Items.GetItemAt(selIndex);
+            if (leftView.SelectedItems.Contains(clickedItem))
+            {
+                leftView.SelectedItems.Remove(clickedItem);
+            }
+            else
+            {
+                leftView.SelectedItems.Add(clickedItem);
+            }
+
         }
 
-        private void rightViewItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void rightViewItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             object item = (sender as ListBoxItem).DataContext;
-            rightView.SelectedIndex = rightView.Items.IndexOf(item);
+            Int32 selIndex = rightView.Items.IndexOf(item);
+            if (selIndex == -1) return;
+            object clickedItem = rightView.Items.GetItemAt(selIndex);
+            if (rightView.SelectedItems.Contains(clickedItem))
+            {
+                rightView.SelectedItems.Remove(clickedItem);
+            }
+            else
+            {
+                rightView.SelectedItems.Add(clickedItem);
+            }
+
         }
 
         async private void mkfileBut_Click(object sender, RoutedEventArgs e)
@@ -424,5 +446,17 @@ namespace VFile_Manager
             await Task.Run (() => UpdateView(FileOperator.Side.Right));
         }
 
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            object obj = (sender as ListBoxItem).DataContext;
+        }
+
+        private void cmdHere_Click(object sender, RoutedEventArgs e)
+        {
+            if (!FileOperator.StartCmd(File_Containers.FileDualContainer.ChooseContainer(FileOperator.ActiveDirectory).StoredDirectory))
+            {
+                MessageBox.Show("Error opening cmd from this directory", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
     }
 }

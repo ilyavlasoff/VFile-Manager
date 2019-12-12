@@ -45,7 +45,10 @@
                     <Image Source="/Icons/find.png" RenderOptions.BitmapScalingMode="Fant" SnapsToDevicePixels="True"></Image>
                 </Button>
                 <Button x:Name="compHash" Width="30" Height="30" Background="Transparent" BorderThickness="0" ToolTip="Compare Hash" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0">
-                    hash
+                    <Image Source="/Icons/hash.png" RenderOptions.BitmapScalingMode="Fant" SnapsToDevicePixels="True"></Image>
+                </Button>
+                <Button x:Name="cmdHere" Width="30" Height="30" Background="Transparent" BorderThickness="0" ToolTip="Command line" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0" Click="cmdHere_Click">
+                    <Image Source="/Icons/cmd.png" RenderOptions.BitmapScalingMode="Fant" SnapsToDevicePixels="True"></Image>
                 </Button>
             </StackPanel>
             <Button x:Name="setBut" Width="30" Height="30" Background="Transparent" BorderThickness="0" ToolTip="Settings" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10,0" Click="setBut_Click">
@@ -115,11 +118,17 @@
                     <RowDefinition Height="20"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0">
-                    <ScrollViewer Name="leftScrollViewer">
-                        <ListBox Name="leftView" SelectionMode="Multiple" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" PreviewMouseLeftButtonDown="leftView_PreviewMouseLeftButtonDown" PreviewMouseWheel="leftView_PreviewMouseWheel" PreviewMouseDoubleClick="leftView_PreviewMouseLeftButtonDown">
+                    <ScrollViewer Name="leftScrollViewer" >
+                        <ListBox Name="leftView" VirtualizingPanel.IsVirtualizing="True" SelectionMode="Multiple" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" PreviewMouseLeftButtonDown="leftView_PreviewMouseLeftButtonDown" PreviewMouseWheel="leftView_PreviewMouseWheel" PreviewMouseDoubleClick="leftView_PreviewMouseLeftButtonDown">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel/>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <ListBoxItem Width="Auto" Height="30" x:Name="leftViewItem" PreviewMouseDoubleClick="leftViewItem_PreviewMouseDoubleClick" PreviewMouseLeftButtonDown="leftViewItem_PreviewMouseLeftButtonDown">
+                                    <ListBoxItem Width="Auto" Height="30" x:Name="leftViewItem" PreviewMouseDoubleClick="leftViewItem_PreviewMouseDoubleClick" 
+                                                 PreviewMouseLeftButtonUp="leftViewItem_MouseLeftButtonDown">
                                         <Grid x:Name="name">
                                             <Grid.ColumnDefinitions>
                                                 <!--ColumnDefinition Width="30"></>
@@ -142,7 +151,7 @@
                                         </Grid>
                                         <ListBoxItem.ContextMenu>
                                             <ContextMenu>
-                                                <MenuItem Header="Open"></MenuItem>
+                                                <MenuItem Header="Open" Click="MenuItem_Click"></MenuItem>
                                                 <MenuItem Header="Move"></MenuItem>
                                                 <MenuItem Header="Copy"></MenuItem>
                                                 <MenuItem Header="Delete"></MenuItem>
@@ -180,10 +189,16 @@
                 </Grid>
                 <Grid Grid.Row="0">
                     <ScrollViewer Name="rightScrollViewer">
-                        <ListBox Name="rightView" SelectionMode="Multiple" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" PreviewMouseLeftButtonDown="rightView_PreviewMouseLeftButtonDown" PreviewMouseDoubleClick="rightView_PreviewMouseLeftButtonDown" PreviewMouseWheel="rightView_PreviewMouseWheel">
+                        <ListBox Name="rightView" VirtualizingPanel.IsVirtualizing="True" SelectionMode="Multiple" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" PreviewMouseLeftButtonDown="rightView_PreviewMouseLeftButtonDown" PreviewMouseDoubleClick="rightView_PreviewMouseLeftButtonDown" PreviewMouseWheel="rightView_PreviewMouseWheel">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel/>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <ListBoxItem Width="Auto" Height="30" x:Name="rightViewItem" PreviewMouseDoubleClick="rightViewItem_PreviewMouseDoubleClick" PreviewMouseLeftButtonDown="rightViewItem_PreviewMouseLeftButtonDown">
+                                    <ListBoxItem Width="Auto" Height="30" x:Name="rightViewItem" PreviewMouseDoubleClick="rightViewItem_PreviewMouseDoubleClick"
+                                                 PreviewMouseLeftButtonDown="rightViewItem_MouseLeftButtonDown">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="30"></ColumnDefinition>
