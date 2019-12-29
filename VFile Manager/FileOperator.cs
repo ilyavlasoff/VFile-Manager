@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Text;
 using System.IO;
 using VFile_Manager.FileObjects;
@@ -19,17 +20,18 @@ namespace VFile_Manager
         public static void InitilalDirs()
         {
             List<String> fileStartPaths = SavedDataReader.GetSavedStartingDirsFromXml().ToList();
+            SavedDataReader.LoadUserDefinedFileAssociations();
             String leftPath = fileStartPaths[0];
             if (!Directory.Exists(leftPath))
             {
                 leftPath = Directory.GetCurrentDirectory();
-                SavedDataReader.SetSavedStartingDirsToXml(leftPath, Side.Left);
+                SavedDataReader.SetSavedStartingDirsToXml(SavedDataReader.OpenMode.lastUsed, leftPath, Side.Left);
             }
             String rightPath = fileStartPaths[1];
             if (!Directory.Exists(rightPath))
             {
                 rightPath = Directory.GetCurrentDirectory();
-                SavedDataReader.SetSavedStartingDirsToXml(rightPath, Side.Right);
+                SavedDataReader.SetSavedStartingDirsToXml(SavedDataReader.OpenMode.lastUsed, rightPath, Side.Right);
             }
             File_Containers.FileDualContainer.ChooseContainer(Side.Left).GoToDirectory(leftPath);
             File_Containers.FileDualContainer.ChooseContainer(Side.Right).GoToDirectory(rightPath);
@@ -89,11 +91,15 @@ namespace VFile_Manager
             {
                 if (_isDir)
                 {
+                    if (Directory.Exists(_filepath))
+                        throw new Exception($"Directory {_filepath} is already exists");
                     DirectoryInfo dirinfo = Directory.CreateDirectory(_filepath);
                     return new Dir(dirinfo);
                 }
                 else
                 {
+                    if (System.IO.File.Exists(_filepath))
+                        throw new Exception($"File {_filepath} is already exists");
                     System.IO.File.Create(_filepath);
                     return new FileObjects.File(new FileInfo(_filepath));
                 }
@@ -104,14 +110,14 @@ namespace VFile_Manager
             }
         }
 
-        public static void CopyFiles(IEnumerable<IFileObject> _files, File_Containers.FileContainer _dir)
+        public static async Task CopyFiles(IEnumerable<IFileObject> _files, File_Containers.FileContainer _dir)
         {
             Dir receiver = _dir.StoredDirectory;
             try
             {
                 foreach (IFileObject obj in _files)
                 {
-                    obj.Copy(receiver);
+                    await obj.Copy(receiver);
                 }
             }
             catch (Exception ex)
@@ -120,19 +126,19 @@ namespace VFile_Manager
             }
         }
 
-        public static void MoveFiles(IEnumerable<IFileObject> _files, File_Containers.FileContainer _dir)
+        public static async Task MoveFiles(IEnumerable<IFileObject> _files, File_Containers.FileContainer _dir)
         {
             Dir receiver = _dir.StoredDirectory;
-            try
+            foreach (IFileObject obj in _files)
             {
-                foreach (IFileObject obj in _files)
+                try
                 {
-                    obj.Move(receiver);
+                    await obj.Move(receiver);
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
             }
         }
 
@@ -154,7 +160,7 @@ namespace VFile_Manager
             {
                 foreach (IFileObject fobj in _files)
                 {
-                    //fobj.Delete();
+                    fobj.Delete();
                 }
             }
             catch (Exception ex)
@@ -166,9 +172,10 @@ namespace VFile_Manager
         public static IEnumerable<FileObjects.File> Find (IEnumerable<Dir> _dirsToFind, Dir.FindMode _mode, IEnumerable<String> _conditions)
         {
             List<FileObjects.File> foundedItems = new List<FileObjects.File>();
-            foreach (Dir file in _dirsToFind)
+            int a = _dirsToFind.ToList().Count;
+            foreach (Dir dir in _dirsToFind)
             {
-                foundedItems.AddRange(file.Find(_mode, _conditions.ToList()));
+                foundedItems.AddRange(dir.Find(_mode, _conditions.ToList()));
             }
             return foundedItems;
         }
@@ -196,10 +203,10 @@ namespace VFile_Manager
                     _mas.Sort((first, second) => DateTime.Compare(second.Info.CreateTime, first.Info.CreateTime));
                     break;
                 case 6:
-                    _mas.Sort((first, second) => Convert.ToInt32(first.Info.IsDirectory));
+                    _mas.Sort((first, second) => Convert.ToInt32(second.Info.IsDirectory) - Convert.ToInt32(first.Info.IsDirectory));
                     break;
                 case 7:
-                    _mas.Sort((first, second) => Convert.ToInt32(!first.Info.IsDirectory));
+                    _mas.Sort((first, second) => Convert.ToInt32(first.Info.IsDirectory) - Convert.ToInt32(second.Info.IsDirectory));
                     break;
                 default:
                     throw new Exception("Out of range mas");
@@ -212,9 +219,9 @@ namespace VFile_Manager
         {
             Process openProc = new Process();
             openProc.StartInfo.FileName = "cmd";
-            openProc.StartInfo.Arguments = $"\"{_dir.Info.FullName}\"";
             try
             {
+                openProc.StartInfo.WorkingDirectory = _dir.Info.FullName;
                 return openProc.Start();
             }
             catch (Exception ex)

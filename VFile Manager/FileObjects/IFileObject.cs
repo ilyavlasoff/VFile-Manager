@@ -12,8 +12,8 @@ namespace VFile_Manager.FileObjects
         IFileDirInfo Info { get; }
         bool Exists();
         void Delete();
-        void Move(Dir _path);
-        void Copy(Dir _path);
+        Task Move(Dir _path);
+        Task Copy(Dir _path);
         void Rename(String _newName);
         
     }

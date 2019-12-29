@@ -20,18 +20,35 @@ namespace VFile_Manager
     /// </summary>
     public partial class FindWindow : Window
     {
-        IEnumerable<Dir> DirsToFind;
-
+        
         public FindWindow(IEnumerable<Dir> _initDir)
         {
             InitializeComponent();
-            DirsToFind = _initDir;
             foreach (IFileObject dir in _initDir)
-                dirsToFindBox.AppendText(dir.Info.FullName + "\n");
+                dirsToFindBox.AppendText(dir.Info.FullName + ";");
         }
 
         private void startSearchBut_Click(object sender, RoutedEventArgs e)
         {
+            List<FileObjects.Dir> DirsToFind = new List<Dir>();
+            try
+            {
+                string[] strdirs = new TextRange(dirsToFindBox.Document.ContentStart, dirsToFindBox.Document.ContentEnd).Text.Trim().Split(';');
+                foreach (String d in strdirs)
+                    try
+                    {
+                        DirsToFind.Add(new Dir(d));
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"File {d} does not find: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             if (byNameRadio.IsChecked == true)
             {
                 String searchConditionsAll = condByNameStr.Text;
@@ -43,7 +60,7 @@ namespace VFile_Manager
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Search can not be executed", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"Search can not be executed: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 } 
             }
@@ -134,6 +151,23 @@ namespace VFile_Manager
                 catch (Exception ex)
                 {
                     MessageBox.Show("Search can not be executed", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+            }
+        }
+
+        private void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            object obj = (sender as ListBoxItem).DataContext;
+            if (obj != null)
+            {
+                try
+                {
+                    FileOperator.HandleOpenFileOrDir(obj, FileOperator.Side.Left);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"This item can not be opened. Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
             }

@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<settings>
+  <openDirMode>2</openDirMode>
+  <lastUsedDirs>
+    <left>C:\</left>
+    <right>C:\php7</right>
+  </lastUsedDirs>
+  <userDefinedPaths>
+    <left>C:\Users\iljav\source\repos\VFile Manager\VFile Manager\bin\Debug</left>
+    <right>C:\Users\iljav\source\repos\VFile Manager\VFile Manager\bin\Debug</right>
+  </userDefinedPaths>
+  <association>
+    <txt override_system="0">C:\Program Files\Notepad++\notepad++.exe</txt>
+    <txte override_system="1">C:\Program Files\Notepad++\notepad++.exe</txte>
+    <wr override_system="0">rt34</wr>
+    <geg45 override_system="0">re345rt</geg45>
+  </association>
+</settings>

@@ -5,12 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VFile_Manager"
         mc:Ignorable="d"
-        Title="CreateFileOrDir" Height="200" Width="400">
+        Title="Create..." Height="200" Width="400" Icon="/Icons/add_file.png">
     <Grid>
-        <StackPanel Orientation="Vertical">
-            <TextBlock Name="titleForStr"></TextBlock>
-            <TextBox Name="pathRow" Height="30" Width="350"></TextBox>
-            <Button Width="50" Height="20" Name="acceptButton" Click="acceptButton_Click">Accept</Button>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-40,0,0">
+            <TextBlock Foreground="#4f83cc" Name="titleForStr"></TextBlock>
+            <TextBox Name="pathRow" Height="30" Width="350" Margin="0,10" BorderBrush="#4f83cc" Foreground="#4f83cc"></TextBox>
         </StackPanel>
+        <Button Height="20" Name="acceptButton" Click="acceptButton_Click" BorderBrush="#304ffe" VerticalAlignment="Bottom" Foreground="#4f83cc"
+                Background="AliceBlue" HorizontalAlignment="Center" Margin="170,0,172,29">Accept</Button>
     </Grid>
 </Window>

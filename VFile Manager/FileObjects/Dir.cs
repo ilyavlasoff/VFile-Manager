@@ -53,6 +53,13 @@ namespace VFile_Manager.FileObjects
         {
             return CurrentDirInfo.GetDirectories(_filter).Select((item) => new Dir(item));
         }
+        public IEnumerable<IFileObject> GetContent(String _filter = "*")
+        {
+            List<IFileObject> resobj = new List<IFileObject>();
+            resobj.AddRange(this.GetFiles(_filter));
+            resobj.AddRange(this.GetDirectories(_filter));
+            return resobj;
+        }
         public bool Exists()
         {
             return CurrentDirInfo.Exists;
@@ -144,35 +151,72 @@ namespace VFile_Manager.FileObjects
             return findResInInnderDirs;
         }
 
-
-        public void Copy(Dir _path)
+        public bool IsExistsHere(String _filename)
         {
-            if (CurrentDirInfo.Exists && _path.Exists())
-            {
-
-            }
+            return this.CurrentDirInfo.GetDirectories().Any((item) => item.Name == _filename) || this.CurrentDirInfo.GetFiles().Any((item) => item.Name == _filename);
         }
 
-        public async void Move(Dir _path)
+        public async Task Copy(Dir _path)
+        {
+            if (CurrentDirInfo.Exists && _path.Exists()) //&& !_path.Info.FullName.Contains(this.Info.FullName) && !_path.IsExistsHere(this.Info.ShortName))
+            {
+                try
+                {
+                    Dir tempdir = FileOperator.MkDirFile(Path.Combine(_path.Info.FullName, this.Info.ShortName), true) as Dir;
+                    foreach (File fobj in this.GetFiles())
+                    {
+                        await Task.Run(() => fobj.Copy(tempdir));
+                    }
+                    foreach (Dir dobj in this.GetDirectories())
+                    {
+                        await Task.Run(() => dobj.Copy(tempdir));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"Copy directory is unavailable: {ex.Message}");
+                }
+            }
+            else throw new Exception($"Can't copy in directory {_path.Info.ShortName}");
+        }
+
+        public  async Task Move(Dir _path)
         {
             if (CurrentDirInfo.Exists && _path.Exists())
             {
-                await Task.Run(() => CurrentDirInfo.MoveTo(_path.Info.FullName));
+                try
+                {
+                    await Task.Run(() => CurrentDirInfo.MoveTo(Path.Combine(_path.Info.FullName, this.Info.ShortName)));
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"Can't move {_path.Info.ShortName}");
+                }
             }
+            else throw new Exception($"Can't move in directory {_path.Info.ShortName}");
         }
 
         public void Rename(String _name)
         {
-            if (_name.Length < MaxDirLen)
+            if (_name == this.Info.ShortName)
             {
-                CurrentDirInfo.MoveTo(CurrentDirInfo.Parent.FullName + "\\" + _name);
+                throw new Exception($"Old file name can not be same as old name: {_name}");
             }
+            if (!(new Dir(this.Info.Parent)).IsExistsHere(_name) && _name.Length < MaxDirLen)
+            {
+                CurrentDirInfo.MoveTo(Path.Combine(CurrentDirInfo.Parent.FullName, _name));
+            }
+            else throw new Exception($"Wrong name: {_name}");
         }
 
         public void Delete()
         {
             if (CurrentDirInfo.Exists)
             {
+                foreach (File file in this.GetFiles())
+                    file.Delete();
+                foreach (Dir dir in this.GetDirectories())
+                    dir.Delete();
                 CurrentDirInfo.Delete();
             }
         }

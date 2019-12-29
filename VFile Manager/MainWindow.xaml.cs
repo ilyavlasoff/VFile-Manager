@@ -9,6 +9,8 @@ using System.Windows.Media;
 using VFile_Manager.FileObjects;
 using System.Threading;
 using System.Threading.Tasks;
+using System.IO;
+using System.Globalization;
 using System.Text;
 
 namespace VFile_Manager
@@ -39,7 +41,7 @@ namespace VFile_Manager
             }
         }
 
-        private void UpdateView(FileOperator.Side _s, IEnumerable<IFileObject> _files = null)
+        private void UpdateView(FileOperator.Side _s, IEnumerable<IFileObject> _files = null, bool isMakeActive = true)
         {
             ListBox someView = null;
             ComboBox someRootComboBox = null;
@@ -72,7 +74,7 @@ namespace VFile_Manager
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Unable to get data. Application will be closed", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Files list can not be get", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
                 try
@@ -86,11 +88,20 @@ namespace VFile_Manager
                 }
                 List<String> drives = FileOperator.GetAllLogicalDrives().ToList();
                 String logicalDrive = File_Containers.FileDualContainer.ChooseContainer(_s).StoredDirectory.Info.LogicalDrive;
-                Dispatcher.Invoke(() => someRootComboBox.ItemsSource = drives);
+                try
+                {
+                    Dispatcher.Invoke(() => someRootComboBox.ItemsSource = drives);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("This disk is not availbale. Chack other disk", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
                 Dispatcher.Invoke(() => someRootComboBox.SelectedItem = drives.Find((item) => logicalDrive.Equals(item)));
                 Dispatcher.Invoke(() => somePathRow.Text = File_Containers.FileDualContainer.ChooseContainer(_s).StoredDirectory.Info.ShortName);
                 Dispatcher.Invoke(() => someStatusStr.DataContext = File_Containers.FileDualContainer.ChooseContainer(_s).StoredDirectory.Info);
-                MakeDirActive(_s);
+                if (isMakeActive)
+                    MakeDirActive(_s);
             }
         }
 
@@ -101,14 +112,16 @@ namespace VFile_Manager
             while (true)
             {
                 await Task.Delay(1000);
+                //FileOperator.Side s = FileOperator.ActiveDirectory;
                 List<IFileObject> leftNewList = FileOperator.GetDirContainsList(FileOperator.Side.Left).ToList();
                 List<IFileObject> rightNewList = FileOperator.GetDirContainsList(FileOperator.Side.Right).ToList();
-                if (!CompareSortedFileLists(leftList, leftNewList) || !CompareSortedFileLists(rightList, rightNewList) )
+                List<String> drives = FileOperator.GetAllLogicalDrives().ToList();
+                if (!CompareSortedFileLists(leftList, leftNewList) || !CompareSortedFileLists(rightList, rightNewList) || drives.Count != (rootComboBoxL.ItemsSource.Cast<string>().Count()))
                 {
                     //lock (synclock)
                     {
-                        await Task.Run(() => UpdateView(FileOperator.Side.Left, leftNewList));
-                        await Task.Run(() => UpdateView(FileOperator.Side.Right, rightNewList));
+                        await Task.Run(() => UpdateView(FileOperator.Side.Left, leftNewList, false));
+                        await Task.Run(() => UpdateView(FileOperator.Side.Right, rightNewList, false));
                     }
                     leftList = leftNewList;
                     rightList = rightNewList;
@@ -185,9 +198,10 @@ namespace VFile_Manager
 
         async private void rootComboBoxL_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            String selectedItemL = (sender as ComboBox).SelectedItem.ToString();
+            String selectedItemL = null;
             try
             {
+                selectedItemL = (sender as ComboBox).SelectedItem.ToString();
                 FileOperator.HandleOpenFileOrDir(new Dir(selectedItemL), FileOperator.Side.Left);
             }
             catch (Exception ex)
@@ -200,9 +214,10 @@ namespace VFile_Manager
 
         async private void rootComboBoxR_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            String selectedItemR = (sender as ComboBox).SelectedItem.ToString();
+            String selectedItemR = null;
             try
             {
+                selectedItemR = (sender as ComboBox).SelectedItem.ToString();
                 FileOperator.HandleOpenFileOrDir(new Dir(selectedItemR), FileOperator.Side.Right);
             }
             catch (Exception ex)
@@ -219,11 +234,6 @@ namespace VFile_Manager
             setWin.ShowDialog();
         }
 
-        private void leftView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            MakeDirActive(FileOperator.Side.Left);
-        }
-
         private void leftView_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             MakeDirActive(FileOperator.Side.Left);
@@ -237,10 +247,6 @@ namespace VFile_Manager
             }
         }
 
-        private void rightView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            MakeDirActive(FileOperator.Side.Right);
-        }
 
         private void rightView_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
@@ -316,6 +322,45 @@ namespace VFile_Manager
             return selected.Cast<IFileObject>();
         }
 
+        private void DeletePreviouslyCreated(File_Containers.FileContainer receiver, IEnumerable<IFileObject> selectedItems)
+        {
+            foreach (IFileObject obj in selectedItems)
+            {
+                if (receiver.StoredDirectory.IsExistsHere(obj.Info.ShortName))
+                {
+                    MessageBoxResult res = MessageBox.Show($"File {obj.Info.ShortName} is already exists in {receiver.StoredDirectory.Info.ShortName}. Replace it?",
+                        "Warning", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (res == MessageBoxResult.Yes)
+                    {
+                        String path = Path.Combine(receiver.StoredDirectory.Info.FullName, obj.Info.ShortName);
+                        List<VFile_Manager.FileObjects.File> filesInDir = receiver.StoredDirectory.GetFiles().ToList();
+                        List<Dir> dirsInDir = receiver.StoredDirectory.GetDirectories().ToList();
+                        IFileObject fileobjToDelete = null;
+                        fileobjToDelete = filesInDir.Find((item) => item.Info.ShortName == obj.Info.ShortName);
+                        if (fileobjToDelete == null)
+                            fileobjToDelete = dirsInDir.Find((item) => item.Info.ShortName == obj.Info.ShortName);
+                        if (fileobjToDelete != null)
+                        {
+                            fileobjToDelete.Delete();
+                        }
+                    }
+                }
+            }
+        }
+
+        private void NotifyAboutFileOperations(String _notification)
+        {
+            operationTextBlock.Visibility = Visibility.Visible;
+            fileInfo.Visibility = Visibility.Collapsed;
+            operationTextBlock.Text = _notification;
+        }
+
+        private void ClearNotifyAboutFileOperations()
+        {
+            operationTextBlock.Visibility = Visibility.Collapsed;
+            fileInfo.Visibility = Visibility.Visible;
+        }
+
         async private void copyBut_Click(object sender, RoutedEventArgs e)
         {
             IEnumerable<IFileObject> selectedItems = GetSelectedItemsData();
@@ -326,11 +371,15 @@ namespace VFile_Manager
             }
             File_Containers.FileContainer receiver = FileOperator.ActiveDirectory == FileOperator.Side.Left ? File_Containers.FileDualContainer.ChooseContainer(FileOperator.Side.Right) :
                     File_Containers.FileDualContainer.ChooseContainer(FileOperator.Side.Left);
+            Task delTask = Task.Run(() => DeletePreviouslyCreated(receiver, selectedItems));
+            delTask.Wait();
             if (MessageBox.Show($"{selectedItems.Count()} items will be copied. Continue?", "Information", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 try
                 {
-                    FileOperator.CopyFiles(selectedItems, receiver);
+                    NotifyAboutFileOperations($"Copy files to {receiver}");
+                    await FileOperator.CopyFiles(selectedItems, receiver);
+                    ClearNotifyAboutFileOperations();
                 }
                 catch (Exception ex)
                 {
@@ -343,27 +392,38 @@ namespace VFile_Manager
 
         async private void movBut_Click(object sender, RoutedEventArgs e)
         {
-            IEnumerable<IFileObject> selectedItems = GetSelectedItemsData();
+            List<IFileObject> selectedItems = GetSelectedItemsData().ToList();
             if(selectedItems.Count() == 0)
             {
                 MessageBox.Show("No elements selected", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
             File_Containers.FileContainer receiver = FileOperator.ActiveDirectory == FileOperator.Side.Left ? File_Containers.FileDualContainer.ChooseContainer(FileOperator.Side.Right) :
-                    File_Containers.FileDualContainer.ChooseContainer(FileOperator.Side.Left);
+        File_Containers.FileDualContainer.ChooseContainer(FileOperator.Side.Left);
+            DeletePreviouslyCreated(receiver, selectedItems); 
             if (MessageBox.Show($"{selectedItems.Count()} items will be moved. Continue?", "Information", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 try
                 {
-                    FileOperator.MoveFiles(selectedItems, receiver);
+                    NotifyAboutFileOperations($"Move files to {receiver.StoredDirectory.Info.ShortName}");
+                    await FileOperator.MoveFiles(selectedItems, receiver);
+                    ClearNotifyAboutFileOperations();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Unable to move in this directory", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"Unable to move in {receiver.StoredDirectory.Info.ShortName}: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
-                await Task.Run(() => UpdateView(FileOperator.Side.Left));
-                await Task.Run(() => UpdateView(FileOperator.Side.Right));
+                try
+                {
+                    await Task.Run(() => UpdateView(FileOperator.Side.Left));
+                    await Task.Run(() => UpdateView(FileOperator.Side.Right));
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Unable to renew views: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
             }
         }
 
@@ -383,7 +443,15 @@ namespace VFile_Manager
             CreateFileOrDir cfd = new CreateFileOrDir(selectedItem.ToList()[0]);
             if (cfd.ShowDialog() == true)
             {
-                await Task.Run(() => UpdateView(FileOperator.ActiveDirectory));
+                try
+                {
+                    await Task.Run(() => UpdateView(FileOperator.ActiveDirectory));
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Unable to renew views: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
             }
         }
 
@@ -400,6 +468,7 @@ namespace VFile_Manager
                 try
                 {
                     FileOperator.Delete(selectedItems);
+                    //await Task.Run(() => UpdateView(FileOperator.ActiveDirectory));
                 }
                 catch (Exception ex)
                 {
@@ -457,6 +526,134 @@ namespace VFile_Manager
             {
                 MessageBox.Show("Error opening cmd from this directory", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void leftView_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            MakeDirActive(FileOperator.Side.Left);
+        }
+
+        private void rightView_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            MakeDirActive(FileOperator.Side.Right);
+        }
+
+        private ListBox dragSource = null;
+
+        #region GetDataFromListBox(ListBox,Point)
+        private static object GetDataFromListBox(ListBox source, Point point)
+        {
+            UIElement element = source.InputHitTest(point) as UIElement;
+            if (element != null)
+            {
+                object data = DependencyProperty.UnsetValue;
+                while (data == DependencyProperty.UnsetValue)
+                {
+                    data = source.ItemContainerGenerator.ItemFromContainer(element);
+
+                    if (data == DependencyProperty.UnsetValue)
+                    {
+                        element = VisualTreeHelper.GetParent(element) as UIElement;
+                    }
+
+                    if (element == source)
+                    {
+                        return null;
+                    }
+                }
+
+                if (data != DependencyProperty.UnsetValue)
+                {
+                    return data;
+                }
+            }
+
+            return null;
+        }
+
+        #endregion
+
+        private void leftView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            ListBox parent = (ListBox)sender;
+            dragSource = parent;
+            object rawdata = GetDataFromListBox(dragSource, e.GetPosition(parent));
+            if (rawdata == null)
+                return;
+            object str = ((IFileObject)rawdata).Info.FullName;
+            if (str != null)
+            {
+                DragDrop.DoDragDrop(parent, str, DragDropEffects.Copy);
+            }
+        }
+
+        private void rightView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            ListBox parent = (ListBox)sender;
+            dragSource = parent;
+            object rawdata = GetDataFromListBox(dragSource, e.GetPosition(parent));
+            if (rawdata == null)
+                return;
+            object str = ((IFileObject)rawdata).Info.FullName;
+            if (str != null)
+            {
+                DragDrop.DoDragDrop(parent, str, DragDropEffects.Copy);
+            }
+        }
+
+        async private Task DropHandler(object _sender, object _e, FileOperator.Side _side)
+        {
+            ListBox parent = (ListBox)_sender;
+            if (parent == dragSource)
+                return;
+            String data = (String)(((DragEventArgs)_e).Data.GetData(typeof(String)));
+            List<IFileObject> objToMove = ((IList<IFileObject>)dragSource.ItemsSource).Where((item) => item.Info.FullName == data).ToList();
+            File_Containers.FileContainer receiver = File_Containers.FileDualContainer.ChooseContainer(_side);
+            try
+            {
+                await Task.Run(() => FileOperator.CopyFiles(objToMove, receiver));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Unable to copy in this directory", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            ((IList<IFileObject>)dragSource.ItemsSource).Remove(objToMove[0]);
+            await Task.Run(() => UpdateView(_side));
+        }
+
+        async private void leftView_Drop(object sender, DragEventArgs e)
+        {
+            await DropHandler(sender, e, FileOperator.Side.Left);
+        }
+
+        async private void rightView_Drop(object sender, DragEventArgs e)
+        {
+            await DropHandler(sender, e, FileOperator.Side.Right);
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            SavedDataReader.SetSavedStartingDirsToXml( SavedDataReader.OpenMode.lastUsed, File_Containers.FileDualContainer.ChooseContainer(FileOperator.Side.Left).StoredDirectory.Info.FullName, FileOperator.Side.Left);
+            SavedDataReader.SetSavedStartingDirsToXml(SavedDataReader.OpenMode.lastUsed, File_Containers.FileDualContainer.ChooseContainer(FileOperator.Side.Right).StoredDirectory.Info.FullName, FileOperator.Side.Right);
+            SavedDataReader.SaveUserDefinedFileAssociations();
+        }
+
+        private void compHash_Click(object sender, RoutedEventArgs e)
+        {
+            List<IFileObject> selectedItem = GetSelectedItemsData().ToList();
+            if (selectedItem.Count() == 0)
+            {
+                MessageBox.Show("No elements selected", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (selectedItem.Count() > 1)
+            {
+                MessageBox.Show("Multiple hashsum calculating is not supported", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            HashViewer hw = new HashViewer(selectedItem[0]);
+            hw.ShowDialog();
         }
     }
 }

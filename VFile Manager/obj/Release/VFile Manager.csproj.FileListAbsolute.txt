@@ -1,0 +1,20 @@
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\bin\Release\VFile Manager.exe.config
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\bin\Release\VFile Manager.exe
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\bin\Release\VFile Manager.pdb
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Release\VFile Manager.csprojAssemblyReference.cache
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Release\FindWindow.baml
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Release\CreateFileOrDir.g.cs
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Release\FindWindow.g.cs
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Release\MainWindow.g.cs
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Release\SettingsWindow.g.cs
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Release\App.g.cs
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Release\VFile Manager_MarkupCompile.cache
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Release\VFile Manager_MarkupCompile.lref
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Release\CreateFileOrDir.baml
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Release\MainWindow.baml
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Release\SettingsWindow.baml
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Release\VFile Manager.g.resources
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Release\VFile_Manager.Properties.Resources.resources
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Release\VFile Manager.csproj.GenerateResource.cache
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Release\VFile Manager.exe
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Release\VFile Manager.pdb

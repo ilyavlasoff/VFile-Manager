@@ -8,7 +8,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("icons/cmd.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("icons/hash.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("icons/addicon.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("icons/deleteicon.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("icons/editicon.png")]
 
 

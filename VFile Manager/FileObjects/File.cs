@@ -31,22 +31,31 @@ namespace VFile_Manager.FileObjects
         }
         public bool Open()
         {
+            String appName;
             StringBuilder sb = new StringBuilder();
-            if (FindExecutable(Info.FullName, null, sb) > 32)
-            {
-                Process openProc = new Process();
-                openProc.StartInfo.FileName = sb.ToString();
-                openProc.StartInfo.Arguments = $"\"{Info.FullName}\"";
-                try
-                {
-                    return openProc.Start();
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
+            FileAssociation fass = SavedDataReader
+                .GetCustomFileAssociation(this.Info.Extension.Trim('.')).ToList().Find((item) => item.Extension == this.Info.Extension.Trim('.'));
+            if (fass == null) {
+                if (FindExecutable(Info.FullName, null, sb) < 32)
+                    return false;
+                else appName = sb.ToString();
             }
-            else return false;
+            else if (!fass.IsOverrideSystem)
+            {
+                if (FindExecutable(Info.FullName, null, sb) > 32)
+                    appName = sb.ToString();
+            }
+            Process openProc = new Process();
+            openProc.StartInfo.FileName = fass.Filename;
+            openProc.StartInfo.Arguments = $"\"{Info.FullName}\"";
+            try
+            {
+                return openProc.Start();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
         public void Delete()
         {
@@ -72,29 +81,32 @@ namespace VFile_Manager.FileObjects
             return this.CurrentFileInfo.GetHashCode();
         }
 
-        public async void Move(Dir _path)
+        public async Task Move(Dir _path)
         {
             if (CurrentFileInfo.Exists && _path.Exists())
             {
-                await Task.Run(() => CurrentFileInfo.MoveTo(_path.Info.FullName + "\\" + CurrentFileInfo.Name));
+                await Task.Run(() => CurrentFileInfo.MoveTo(Path.Combine(_path.Info.FullName, CurrentFileInfo.Name)));
             }
-            else throw new Exception("File or dir not found");
+            else throw new Exception("File or directory not found");
         }
 
-        public async void Copy(Dir _path)
+        public async Task Copy(Dir _path)
         {
+            if (_path.IsExistsHere(CurrentFileInfo.Name))
+                throw new Exception($"File {CurrentFileInfo.Name} is already exists in {_path}");
             if (CurrentFileInfo.Exists && _path.Exists())
             {
-                await Task.Run(() => CurrentFileInfo.CopyTo(_path.Info.FullName + "\\" + CurrentFileInfo.Name));
+                await Task.Run(() => CurrentFileInfo.CopyTo(Path.Combine(_path.Info.FullName, CurrentFileInfo.Name)));
             }
-            else throw new Exception("File or dir not found");
+            else throw new Exception("File or directory not found");
+
         }
 
         public void Rename(String _newName)
         {
             if (CurrentFileInfo.Exists)
             {
-                CurrentFileInfo.MoveTo(CurrentFileInfo.DirectoryName + "\\" + _newName);
+                CurrentFileInfo.MoveTo(Path.Combine(CurrentFileInfo.DirectoryName, _newName));
             }
         }
     }

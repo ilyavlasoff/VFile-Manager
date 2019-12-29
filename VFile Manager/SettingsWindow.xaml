@@ -5,32 +5,41 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VFile_Manager"
         mc:Ignorable="d"
-        Title="Settings" Height="400" Width="600">
+        Title="Settings" Height="450" Width="610">
     <Grid>
-        <DockPanel>
-            <TextBlock DockPanel.Dock="Top">Startup with</TextBlock>
-            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-                <TextBlock>Left column</TextBlock>
-                <TextBox Width="400"></TextBox>
+        <StackPanel Orientation="Vertical" Margin="20,5">
+            <TextBlock Margin="3">Load start directories as</TextBlock>
+            <RadioButton Margin="3,0,3,3" Content="Use previous opened directories" IsChecked="True" Name="usePrev"></RadioButton>
+            <RadioButton  Margin="3" Content="Use program home directory" Name="usePrHome"></RadioButton>
+            <RadioButton  Margin="3"  Content="Use custom directories" Name="useCustomDirs"></RadioButton>
+            <StackPanel Margin="3" Orientation="Horizontal" IsEnabled="{Binding ElementName=useCustomDirs, Path=IsChecked}">
+                <TextBlock Width="100">Left directory:</TextBlock>
+                <TextBox Width="400" Height="20" HorizontalAlignment="Left" Name="leftPathTextBox"></TextBox>
             </StackPanel>
-            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-                <TextBlock>Right column</TextBlock>
-                <TextBox Width="400"></TextBox>
+            <StackPanel Margin="3" Orientation="Horizontal" IsEnabled="{Binding ElementName=useCustomDirs, Path=IsChecked}">
+                <TextBlock Width="100">Right directory:</TextBlock>
+                <TextBox Height="20" Width="400" HorizontalAlignment="Left" Name="rightPathTextBox"></TextBox>
             </StackPanel>
-            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-                <TextBlock>Order by</TextBlock>
-                <ComboBox Width="200">
-                    <ComboBoxItem>Sort by name ascending</ComboBoxItem>
-                    <ComboBoxItem>Sort by name descending</ComboBoxItem>
-                    <ComboBoxItem>Sort by size ascending</ComboBoxItem>
-                    <ComboBoxItem>Sort by size descending</ComboBoxItem>
-                    <ComboBoxItem>Sort by date ascending</ComboBoxItem>
-                    <ComboBoxItem>Sort by date descending</ComboBoxItem>
-                    <ComboBoxItem>Directories first</ComboBoxItem>
-                    <ComboBoxItem>Files first</ComboBoxItem>
-                </ComboBox>
+            <TextBlock Margin="3">Custom extensions settings:</TextBlock>
+            <DataGrid Width="550" Height="180" Name="pathGrid" IsReadOnly="True">
+                <!--DataGrid.Columns>
+                    <DataGridTextColumn Header="Filename"  Width="80" Binding="{Binding ElementName=Extension}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Handler" Width="*" Binding="{Binding ElementName=Filename}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Override" Width="80" Binding="{Binding ElementName=IsOverrideSystem}"></DataGridTextColumn>
+                </-->
+            </DataGrid>
+            <StackPanel Orientation="Horizontal">
+                <Button Width="25" Height="25" BorderThickness="0" Name="addNewExtensionSetting" HorizontalAlignment="Left" Margin="0,3,3,0" Click="addNewExtensionSetting_Click" Background="Transparent" Foreground="Transparent">
+                    <Image Source="/Icons/addicon.png" Width="20" Height="20"></Image>
+                </Button>
+                <Button Width="25" Height="25" BorderThickness="0" Name="editExtensionSetting" HorizontalAlignment="Left" Margin="0,3,3,0" Click="editExtensionSetting_Click" Background="Transparent" Foreground="Transparent">
+                    <Image Source="/Icons/editicon.png" Width="20" Height="20"></Image>
+                </Button>
+                <Button Width="25" Height="25" BorderThickness="0" Name="removeExtensionSetting" HorizontalAlignment="Left" Margin="0,3,3,0" Click="removeExtensionSetting_Click" Background="Transparent" Foreground="Transparent">
+                    <Image Source="/Icons/deleteicon.png" Width="20" Height="20"></Image>
+                </Button>
             </StackPanel>
-            <Button DockPanel.Dock="Bottom">Accept</Button>
-        </DockPanel>
+            <Button Background="Transparent" Name="saveSettings" Click="saveSettings_Click" Width="80" Height="20" HorizontalAlignment="Right">Save settings</Button>
+        </StackPanel>
     </Grid>
 </Window>

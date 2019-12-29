@@ -1,11 +1,16 @@
-C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\MainWindow.g.cs
-C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\App.g.cs
-C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\VFile Manager_MarkupCompile.cache
-C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\VFile Manager_MarkupCompile.lref
-C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\SettingsWindow.g.cs
 C:\Users\iljav\source\repos\VFile Manager\VFile Manager\bin\Debug\VFile Manager.exe.config
 C:\Users\iljav\source\repos\VFile Manager\VFile Manager\bin\Debug\VFile Manager.exe
 C:\Users\iljav\source\repos\VFile Manager\VFile Manager\bin\Debug\VFile Manager.pdb
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\VFile Manager.csprojAssemblyReference.cache
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\FindWindow.baml
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\CreateFileOrDir.g.cs
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\FindWindow.g.cs
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\MainWindow.g.cs
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\SettingsWindow.g.cs
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\App.g.cs
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\VFile Manager_MarkupCompile.cache
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\VFile Manager_MarkupCompile.lref
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\CreateFileOrDir.baml
 C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\MainWindow.baml
 C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\SettingsWindow.baml
 C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\VFile Manager.g.resources
@@ -13,8 +18,7 @@ C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\VFile_Manager.
 C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\VFile Manager.csproj.GenerateResource.cache
 C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\VFile Manager.exe
 C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\VFile Manager.pdb
-C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\CreateFileOrDir.g.cs
-C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\CreateFileOrDir.baml
-C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\VFile Manager.csprojAssemblyReference.cache
-C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\FindWindow.g.cs
-C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\FindWindow.baml
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\HashViewer.g.cs
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\HashViewer.baml
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\AddNewHandlerWindow.g.cs
+C:\Users\iljav\source\repos\VFile Manager\VFile Manager\obj\Debug\AddNewHandlerWindow.baml
